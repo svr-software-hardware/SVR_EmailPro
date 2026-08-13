@@ -1,0 +1,58 @@
+metadata:
+  name: users
+  type: core_entity
+  description: "Entidad central para autenticación y administración de usuarios."
+
+database_schema:
+  table: users
+  table_es: "usuarios"
+  timestamps: true
+
+  fields:
+    first_name:
+      type: string 50
+      description: "Nombre o nombres del usuario."
+
+    paternal_surname:
+      type: string 50
+      description: "Apellido paterno del usuario."
+
+    maternal_surname:
+      type: string 50
+      not_null: false
+      description: "Apellido materno del usuario."
+
+    email:
+      type: string 100
+      unique: true
+      description: "Correo electrónico utilizado como acceso al sistema."
+
+    role_id:
+      type: bigint unsigned
+      references: roles.id
+      description: "Rol base asignado al usuario."
+
+    password:
+      type: string 80
+      not_null: false
+      description: "Contraseña almacenada mediante hash seguro."
+
+    avatar_filename:
+      type: string 50
+      not_null: false
+      description: "Nombre interno del archivo utilizado como fotografía de perfil."
+
+    email_verified_at:
+      type: timestamp
+      not_null: false
+      description: "Fecha y hora en que el usuario confirmó su cuenta."
+
+    password_recover_at:
+      type: timestamp
+      not_null: false
+      description: "Fecha y hora de la solicitud vigente de recuperación de contraseña."
+
+    remember_token:
+      type: string 100
+      not_null: false
+      description: "Token utilizado para mantener la sesión activa."
