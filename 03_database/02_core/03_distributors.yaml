@@ -1,0 +1,32 @@
+metadata:
+  name: distributors
+  type: core_entity
+  description: "Distribuidores autorizados para comercializar EmailPro."
+
+database_schema:
+  table: distributors
+  table_es: "distribuidores"
+  timestamps: true
+
+  fields:
+    user_id:
+      type: bigint unsigned
+      unique: true
+      references: users.id
+      description: "Cuenta de usuario utilizada por el distribuidor para acceder a EmailPro."
+
+    name:
+      type: string 150
+      description: "Nombre comercial utilizado para identificar al distribuidor."
+
+    clabe:
+      type: string 18
+      not_null: false
+      description: "CLABE utilizada para realizar depósitos al distribuidor."
+
+    fiscal_profile_id:
+      type: bigint unsigned
+      not_null: false
+      unique: true
+      references: fiscal_profiles.id
+      description: "Perfil fiscal asociado al distribuidor."

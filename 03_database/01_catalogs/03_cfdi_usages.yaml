@@ -1,0 +1,115 @@
+metadata:
+  name: cfdi_usages
+  type: general_catalog
+  description: "Usos de CFDI disponibles para los perfiles fiscales de EmailPro."
+
+database_schema:
+  table: cfdi_usages
+  table_es: "usos CFDI"
+
+  fields:
+    code:
+      type: string 4
+      unique: true
+      description: "Clave oficial del uso CFDI."
+
+    name:
+      type: string 150
+      description: "Nombre del uso CFDI."
+
+seed_data:
+  - id: 1
+    code: "G01"
+    name: "Adquisición de mercancías"
+
+  - id: 2
+    code: "G02"
+    name: "Devoluciones, descuentos o bonificaciones"
+
+  - id: 3
+    code: "G03"
+    name: "Gastos en general"
+
+  - id: 4
+    code: "I01"
+    name: "Construcciones"
+
+  - id: 5
+    code: "I02"
+    name: "Mobiliario y equipo de oficina por inversiones"
+
+  - id: 6
+    code: "I03"
+    name: "Equipo de transporte"
+
+  - id: 7
+    code: "I04"
+    name: "Equipo de cómputo y accesorios"
+
+  - id: 8
+    code: "I05"
+    name: "Dados, troqueles, moldes, matrices y herramental"
+
+  - id: 9
+    code: "I06"
+    name: "Comunicaciones telefónicas"
+
+  - id: 10
+    code: "I07"
+    name: "Comunicaciones satelitales"
+
+  - id: 11
+    code: "I08"
+    name: "Otra maquinaria y equipo"
+
+  - id: 12
+    code: "D01"
+    name: "Honorarios médicos, dentales y gastos hospitalarios"
+
+  - id: 13
+    code: "D02"
+    name: "Gastos médicos por incapacidad o discapacidad"
+
+  - id: 14
+    code: "D03"
+    name: "Gastos funerales"
+
+  - id: 15
+    code: "D04"
+    name: "Donativos"
+
+  - id: 16
+    code: "D05"
+    name: "Intereses reales efectivamente pagados por créditos hipotecarios (casa habitación)"
+
+  - id: 17
+    code: "D06"
+    name: "Aportaciones voluntarias al SAR"
+
+  - id: 18
+    code: "D07"
+    name: "Primas por seguros de gastos médicos"
+
+  - id: 19
+    code: "D08"
+    name: "Gastos de transportación escolar obligatoria"
+
+  - id: 20
+    code: "D09"
+    name: "Depósitos en cuentas para el ahorro, primas que tengan como base planes de pensiones"
+
+  - id: 21
+    code: "D10"
+    name: "Pagos por servicios educativos (colegiaturas)"
+
+  - id: 22
+    code: "S01"
+    name: "Sin efectos fiscales"
+
+  - id: 23
+    code: "CP01"
+    name: "Pagos"
+
+  - id: 24
+    code: "CN01"
+    name: "Nómina"

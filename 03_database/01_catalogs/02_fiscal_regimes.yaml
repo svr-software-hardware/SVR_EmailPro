@@ -1,0 +1,141 @@
+metadata:
+  name: fiscal_regimes
+  type: general_catalog
+  description: "Regímenes fiscales disponibles para los perfiles fiscales de EmailPro."
+
+database_schema:
+  table: fiscal_regimes
+  table_es: "regímenes fiscales"
+
+  fields:
+    code:
+      type: string 3
+      unique: true
+      description: "Clave oficial del régimen fiscal."
+
+    name:
+      type: string 150
+      description: "Nombre del régimen fiscal."
+
+    is_individual:
+      type: boolean
+      description: "Indica si el régimen fiscal aplica a personas físicas."
+
+    is_legal_entity:
+      type: boolean
+      description: "Indica si el régimen fiscal aplica a personas morales."
+
+seed_data:
+  - id: 1
+    code: "601"
+    name: "General de Ley Personas Morales"
+    is_individual: false
+    is_legal_entity: true
+
+  - id: 2
+    code: "603"
+    name: "Personas Morales con Fines no Lucrativos"
+    is_individual: false
+    is_legal_entity: true
+
+  - id: 3
+    code: "605"
+    name: "Sueldos y Salarios e Ingresos Asimilados a Salarios"
+    is_individual: true
+    is_legal_entity: false
+
+  - id: 4
+    code: "606"
+    name: "Arrendamiento"
+    is_individual: true
+    is_legal_entity: false
+
+  - id: 5
+    code: "607"
+    name: "Régimen de Enajenación o Adquisición de Bienes"
+    is_individual: true
+    is_legal_entity: false
+
+  - id: 6
+    code: "608"
+    name: "Demás ingresos"
+    is_individual: true
+    is_legal_entity: false
+
+  - id: 7
+    code: "610"
+    name: "Residentes en el Extranjero sin Establecimiento Permanente en México"
+    is_individual: true
+    is_legal_entity: true
+
+  - id: 8
+    code: "611"
+    name: "Ingresos por Dividendos (socios y accionistas)"
+    is_individual: true
+    is_legal_entity: false
+
+  - id: 9
+    code: "612"
+    name: "Personas Físicas con Actividades Empresariales y Profesionales"
+    is_individual: true
+    is_legal_entity: false
+
+  - id: 10
+    code: "614"
+    name: "Ingresos por intereses"
+    is_individual: true
+    is_legal_entity: false
+
+  - id: 11
+    code: "615"
+    name: "Régimen de los ingresos por obtención de premios"
+    is_individual: true
+    is_legal_entity: false
+
+  - id: 12
+    code: "616"
+    name: "Sin obligaciones fiscales"
+    is_individual: true
+    is_legal_entity: false
+
+  - id: 13
+    code: "620"
+    name: "Sociedades Cooperativas de Producción que optan por diferir sus ingresos"
+    is_individual: false
+    is_legal_entity: true
+
+  - id: 14
+    code: "621"
+    name: "Incorporación Fiscal"
+    is_individual: true
+    is_legal_entity: false
+
+  - id: 15
+    code: "622"
+    name: "Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras"
+    is_individual: false
+    is_legal_entity: true
+
+  - id: 16
+    code: "623"
+    name: "Opcional para Grupos de Sociedades"
+    is_individual: false
+    is_legal_entity: true
+
+  - id: 17
+    code: "624"
+    name: "Coordinados"
+    is_individual: false
+    is_legal_entity: true
+
+  - id: 18
+    code: "625"
+    name: "Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas"
+    is_individual: true
+    is_legal_entity: false
+
+  - id: 19
+    code: "626"
+    name: "Régimen Simplificado de Confianza"
+    is_individual: true
+    is_legal_entity: true

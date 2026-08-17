@@ -1,0 +1,33 @@
+metadata:
+  name: fiscal_profiles
+  type: core_entity
+  description: "Información fiscal asociada a las entidades de negocio de EmailPro."
+
+database_schema:
+  table: fiscal_profiles
+  table_es: "perfiles fiscales"
+  timestamps: true
+
+  fields:
+    tax_id:
+      type: string 13
+      unique: true
+      description: "Registro Federal de Contribuyentes del titular del perfil fiscal."
+
+    legal_name:
+      type: string 255
+      description: "Nombre o razón social registrada fiscalmente."
+
+    postal_code:
+      type: string 5
+      description: "Código postal del domicilio fiscal."
+
+    fiscal_regime_id:
+      type: bigint unsigned
+      references: fiscal_regimes.id
+      description: "Régimen fiscal del titular."
+
+    default_cfdi_usage_id:
+      type: bigint unsigned
+      references: cfdi_usages.id
+      description: "Uso CFDI seleccionado más recientemente y utilizado como valor predeterminado."
