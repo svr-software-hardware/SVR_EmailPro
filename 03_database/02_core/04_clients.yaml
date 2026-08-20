@@ -1,0 +1,32 @@
+metadata:
+  name: clients
+  type: core_entity
+  description: "Clientes administrados por los distribuidores autorizados de EmailPro."
+
+database_schema:
+  table: clients
+  table_es: "clientes"
+  timestamps: true
+
+  fields:
+    distributor_id:
+      type: bigint unsigned
+      references: distributors.id
+      description: "Distribuidor responsable de administrar al cliente."
+
+    user_id:
+      type: bigint unsigned
+      unique: true
+      references: users.id
+      description: "Cuenta de usuario utilizada por el cliente para acceder a EmailPro."
+
+    name:
+      type: string 150
+      description: "Nombre comercial utilizado para identificar al cliente."
+
+    fiscal_profile_id:
+      type: bigint unsigned
+      not_null: false
+      unique: true
+      references: fiscal_profiles.id
+      description: "Perfil fiscal asociado al cliente."

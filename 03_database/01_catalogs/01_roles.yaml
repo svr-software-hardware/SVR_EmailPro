@@ -21,3 +21,6 @@ seed_data:
 
   - id: 3
     name: "Distribuidor"
+
+  - id: 4
+    name: "Cliente"
