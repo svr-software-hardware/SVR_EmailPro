@@ -1,7 +1,7 @@
 # Reglas de YAML
 
-**Versión:** 1.0.0  
-**Última actualización:** 2026-08-10
+**Versión:** 1.1.0  
+**Última actualización:** 2026-08-21
 
 ---
 
@@ -202,6 +202,55 @@ Cada campo podrá utilizar únicamente las propiedades necesarias.
 | `description` | Descripción funcional del campo. |
 
 No deberán declararse propiedades innecesarias.
+
+---
+
+# unique_constraints
+
+El bloque `unique_constraints` se utiliza cuando la unicidad de un registro depende de la combinación de dos o más campos.
+
+Este bloque pertenece a `database_schema` y se declara después de `fields`.
+
+Ejemplo:
+
+```yaml
+database_schema:
+  table: domains
+  table_es: "dominios"
+  timestamps: true
+
+  fields:
+    name:
+      type: string 100
+      description: "Nombre del dominio."
+
+    domain_extension_id:
+      type: bigint unsigned
+      references: domain_extensions.id
+      description: "Extensión del dominio."
+
+  unique_constraints:
+    - fields:
+        - name
+        - domain_extension_id
+      description: "Impide registrar más de una vez el mismo dominio completo."
+```
+
+## Propiedades
+
+| Propiedad | Descripción |
+|------------|-------------|
+| `fields` | Lista de campos que forman la combinación única. |
+| `description` | Descripción de la regla de negocio protegida por la restricción. |
+
+## Reglas
+
+- Cada restricción debe contener al menos dos campos.
+- Todos los campos indicados deben existir dentro del bloque `fields` de la misma entidad.
+- La restricción aplica a la combinación completa y no convierte cada campo en único individualmente.
+- No debe utilizarse cuando un solo campo puede declarar `unique: true`.
+- Toda restricción debe responder a una regla de negocio previamente documentada.
+- No deberán declararse nombres de índices ni detalles específicos de un motor de base de datos.
 
 ---
 

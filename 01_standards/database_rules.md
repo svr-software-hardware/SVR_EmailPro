@@ -1,7 +1,7 @@
 # Reglas de Base de Datos
 
-**Versión:** 1.0.0  
-**Última actualización:** 2026-08-10
+**Versión:** 1.1.0  
+**Última actualización:** 2026-08-21
 
 ---
 
@@ -159,6 +159,31 @@ Ejemplos:
 - permissions
 - countries
 - currencies
+
+---
+
+# Restricciones de Unicidad
+
+Las restricciones de unicidad representan reglas reales del negocio que impiden registrar información duplicada.
+
+Cuando un campo debe ser único por sí mismo, la restricción se declara directamente sobre el campo.
+
+Cuando la unicidad depende de la combinación de dos o más campos, deberá declararse una restricción única compuesta.
+
+Una restricción única compuesta no implica que cada campo sea único individualmente. Únicamente impide que se repita la combinación completa de sus valores.
+
+Ejemplos:
+
+- Un correo electrónico de acceso debe ser único por sí mismo.
+- El nombre de un dominio puede repetirse con diferentes extensiones, pero la combinación del nombre y la extensión debe ser única.
+- Una parte local puede repetirse en diferentes dominios, pero la combinación de la parte local y el dominio debe ser única.
+
+Las restricciones de unicidad deberán:
+
+- Responder a una regla documentada del negocio.
+- Incluir únicamente campos pertenecientes a la misma entidad.
+- Evitar restricciones anticipadas para procesos no definidos.
+- Mantener la integridad de la información sin duplicar datos derivados.
 
 ---
 

@@ -1,0 +1,36 @@
+metadata:
+  name: domain_extensions
+  type: general_catalog
+  description: "Extensiones disponibles para los dominios administrados en EmailPro."
+
+database_schema:
+  table: domain_extensions
+  table_es: "extensiones de dominio"
+
+  fields:
+    name:
+      type: string 10
+      unique: true
+      description: "Extensión de dominio almacenada sin punto inicial."
+
+seed_data:
+  - id: 1
+    name: "com"
+
+  - id: 2
+    name: "com.mx"
+
+  - id: 3
+    name: "mx"
+
+  - id: 4
+    name: "net"
+
+  - id: 5
+    name: "net.mx"
+
+  - id: 6
+    name: "org"
+
+  - id: 7
+    name: "org.mx"

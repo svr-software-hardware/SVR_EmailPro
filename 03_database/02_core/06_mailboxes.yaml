@@ -1,0 +1,25 @@
+metadata:
+  name: mailboxes
+  type: core_entity
+  description: "Cuentas de correo asociadas a los dominios administrados en EmailPro."
+
+database_schema:
+  table: mailboxes
+  table_es: "cuentas de correo"
+  timestamps: true
+
+  fields:
+    domain_id:
+      type: bigint unsigned
+      references: domains.id
+      description: "Dominio al que pertenece la cuenta de correo."
+
+    local_part:
+      type: string 64
+      description: "Parte de la dirección de correo que antecede al símbolo arroba."
+
+  unique_constraints:
+    - fields:
+        - domain_id
+        - local_part
+      description: "Impide registrar más de una vez la misma cuenta de correo dentro de un dominio."

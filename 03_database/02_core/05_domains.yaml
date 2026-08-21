@@ -1,0 +1,39 @@
+metadata:
+  name: domains
+  type: core_entity
+  description: "Dominios asociados a los clientes de EmailPro."
+
+database_schema:
+  table: domains
+  table_es: "dominios"
+  timestamps: true
+
+  fields:
+    client_id:
+      type: bigint unsigned
+      references: clients.id
+      description: "Cliente propietario del dominio."
+
+    name:
+      type: string 63
+      description: "Parte del dominio que antecede a su extensión."
+
+    domain_extension_id:
+      type: bigint unsigned
+      references: domain_extensions.id
+      description: "Extensión utilizada para formar el dominio completo."
+
+    expires_at:
+      type: date
+      default: current_date
+      description: "Fecha de expiración vigente del dominio, inicializada con su fecha de creación y actualizada mediante pagos."
+
+    mailbox_limit:
+      type: integer unsigned
+      description: "Cantidad máxima de cuentas de correo activas permitidas para el dominio."
+
+  unique_constraints:
+    - fields:
+        - name
+        - domain_extension_id
+      description: "Impide registrar más de una vez el mismo dominio completo."
