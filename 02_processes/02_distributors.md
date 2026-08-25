@@ -1,7 +1,7 @@
 # Gestión de Distribuidores
 
-**Versión:** 0.2.0  
-**Última actualización:** 2026-08-20
+**Versión:** 0.3.0  
+**Última actualización:** 2026-08-25
 
 ---
 
@@ -19,6 +19,7 @@ Incluye:
 - Creación de la cuenta de usuario asociada al distribuidor.
 - Confirmación inicial de la cuenta del distribuidor.
 - Consulta de la información del distribuidor por parte del Super Admin.
+- Definición y actualización del costo mensual por cuenta de correo asignado al distribuidor.
 - Captura y actualización de información fiscal.
 - Captura y actualización de la CLABE utilizada para recibir depósitos.
 - Administración del uso CFDI predeterminado.
@@ -39,6 +40,10 @@ No incluye:
 - Solo un Super Admin puede registrar distribuidores.
 - Durante el registro, el Super Admin captura el nombre comercial del distribuidor y los datos de la persona responsable de su cuenta de acceso.
 - Los datos de la cuenta de acceso incluyen nombre, apellido paterno, apellido materno cuando corresponda y correo electrónico.
+- Durante el registro, el Super Admin define el costo mensual por cuenta de correo asignado al distribuidor.
+- El costo por cuenta debe ser un importe mayor que cero.
+- El Super Admin puede actualizar el costo asignado al distribuidor.
+- Los cambios en el costo aplican únicamente a pagos futuros y no modifican pagos existentes.
 - Cada distribuidor debe estar asociado a una única cuenta de usuario.
 - La cuenta de usuario es creada durante el registro del distribuidor.
 - El sistema asigna automáticamente el rol Distribuidor a la cuenta creada.
@@ -69,6 +74,8 @@ Super Admin
 Registrar distribuidor
     ↓
 Capturar nombre comercial y datos de la cuenta responsable
+    ↓
+Definir costo mensual por cuenta de correo
     ↓
 Crear cuenta de usuario con rol Distribuidor
     ↓
@@ -108,6 +115,8 @@ Este proceso incorpora el rol Distribuidor al catálogo de roles, pero no modifi
 
 El nombre comercial pertenece al distribuidor. Los nombres, apellidos y correo electrónico de la persona responsable pertenecen a su cuenta de usuario.
 
+El costo por cuenta representa el importe mensual que corresponde a SVR por cada espacio de correo contratado mediante los dominios del distribuidor.
+
 La información fiscal pertenece al perfil fiscal asociado al distribuidor y no a su cuenta de usuario.
 
-Los procesos relacionados con clientes, facturación, pagos y múltiples usuarios por distribuidor deberán documentarse de forma independiente cuando sean requeridos por el negocio.
+Los procesos relacionados con facturación y múltiples usuarios por distribuidor deberán documentarse de forma independiente cuando sean requeridos por el negocio.

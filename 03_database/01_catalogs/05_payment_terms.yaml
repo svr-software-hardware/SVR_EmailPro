@@ -1,0 +1,36 @@
+metadata:
+  name: payment_terms
+  type: general_catalog
+  description: "Periodos disponibles para pagar la vigencia de los dominios de EmailPro."
+
+database_schema:
+  table: payment_terms
+  table_es: "periodos de pago"
+
+  fields:
+    name:
+      type: string 20
+      unique: true
+      description: "Nombre del periodo de pago."
+
+    months:
+      type: integer unsigned
+      unique: true
+      description: "Cantidad de meses que extiende el periodo."
+
+seed_data:
+  - id: 1
+    name: "Mensual"
+    months: 1
+
+  - id: 2
+    name: "Trimestral"
+    months: 3
+
+  - id: 3
+    name: "Semestral"
+    months: 6
+
+  - id: 4
+    name: "Anual"
+    months: 12

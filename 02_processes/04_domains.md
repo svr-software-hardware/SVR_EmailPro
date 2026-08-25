@@ -1,7 +1,7 @@
 # Gestión de Dominios
 
-**Versión:** 0.1.0  
-**Última actualización:** 2026-08-21
+**Versión:** 0.2.0  
+**Última actualización:** 2026-08-25
 
 ---
 
@@ -20,6 +20,7 @@ Incluye:
 - Selección de la extensión del dominio.
 - Inicialización automática de la fecha de expiración del dominio.
 - Definición de la cantidad máxima de cuentas de correo activas permitidas para el dominio.
+- Definición y actualización del precio mensual por cuenta de correo cobrado al cliente.
 - Activación y desactivación de dominios por parte del distribuidor.
 - Consulta de dominios por parte del cliente.
 
@@ -55,6 +56,12 @@ No incluye:
 - La cantidad máxima de cuentas de correo debe ser un número entero mayor que cero.
 - Un dominio puede utilizar una cantidad de cuentas de correo menor que el límite definido.
 - Si se modifica el límite, el nuevo valor no puede ser menor que la cantidad de cuentas de correo que se encuentren activas en ese momento.
+- El distribuidor define el precio mensual por cuenta de correo para cada dominio.
+- El precio de un dominio debe ser, como mínimo, un peso mayor que el costo vigente asignado al distribuidor.
+- El distribuidor puede actualizar el precio del dominio.
+- Los cambios en el precio aplican únicamente a pagos futuros y no modifican pagos existentes.
+- El cliente puede consultar el precio de sus dominios, pero no puede modificarlo.
+- Si el costo de SVR aumenta y el precio deja una diferencia menor a un peso, el dominio no puede recibir nuevos pagos hasta que el distribuidor actualice su precio.
 - Solo el distribuidor puede modificar, activar o desactivar un dominio.
 - Los dominios nunca se eliminan físicamente; únicamente pueden desactivarse.
 - El cliente puede consultar sus dominios, pero no puede modificarlos, activarlos ni desactivarlos.
@@ -77,6 +84,8 @@ Inicializar fecha de expiración con la fecha de creación
     ↓
 Definir límite de cuentas de correo
     ↓
+Definir precio mensual por cuenta de correo
+    ↓
 Dominio disponible para administrar cuentas de correo
 ```
 
@@ -96,6 +105,8 @@ El nombre del dominio representa la parte que antecede a su extensión. Por ejem
 
 El límite de cuentas de correo representa la capacidad activa permitida para el dominio. Las reglas para registrar y administrar dichas cuentas se definen en un proceso independiente.
 
+El precio por cuenta pertenece al dominio porque un mismo cliente puede tener precios diferentes en cada uno de sus dominios.
+
 La fecha de expiración representa la vigencia del servicio del dominio. Su cálculo posterior dependerá del proceso de pagos y no forma parte de la administración manual del dominio.
 
-Los procesos relacionados con cuentas de correo, renovaciones, pagos, facturación y acceso futuro de SVR deberán documentarse de forma independiente cuando sean requeridos por el negocio.
+Los procesos relacionados con suscripciones, facturación y acceso futuro de SVR deberán documentarse de forma independiente cuando sean requeridos por el negocio.

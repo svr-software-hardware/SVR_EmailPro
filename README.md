@@ -1,7 +1,7 @@
 # EmailPro
 
-**Versión:** 0.4.0  
-**Última actualización:** 2026-08-21
+**Versión:** 0.5.0  
+**Última actualización:** 2026-08-25
 
 ---
 

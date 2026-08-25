@@ -19,6 +19,10 @@ database_schema:
       type: string 150
       description: "Nombre comercial utilizado para identificar al distribuidor."
 
+    mailbox_unit_cost:
+      type: decimal 11,2
+      description: "Costo mensual por cuenta de correo asignado por SVR al distribuidor."
+
     clabe:
       type: string 18
       not_null: false

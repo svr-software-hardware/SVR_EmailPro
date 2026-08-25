@@ -1,0 +1,61 @@
+metadata:
+  name: payments
+  type: core_entity
+  description: "Pagos exitosos realizados para extender la vigencia de los dominios de EmailPro."
+
+database_schema:
+  table: payments
+  table_es: "pagos"
+  timestamps: true
+
+  fields:
+    domain_id:
+      type: bigint unsigned
+      references: domains.id
+      description: "Dominio cuya vigencia fue pagada."
+
+    payment_term_id:
+      type: bigint unsigned
+      references: payment_terms.id
+      description: "Periodo seleccionado para realizar el pago."
+
+    mailbox_quantity:
+      type: integer unsigned
+      description: "Capacidad de cuentas de correo cobrada al momento del pago."
+
+    customer_unit_price:
+      type: decimal 11,2
+      description: "Precio mensual por cuenta de correo aplicado al cliente."
+
+    distributor_unit_cost:
+      type: decimal 11,2
+      description: "Costo mensual por cuenta de correo aplicado al distribuidor."
+
+    months:
+      type: integer unsigned
+      description: "Cantidad de meses pagados conservada como valor histórico."
+
+    gross_amount:
+      type: decimal 11,2
+      description: "Importe total pagado por el cliente."
+
+    svr_amount:
+      type: decimal 11,2
+      description: "Importe del pago correspondiente a SVR."
+
+    distributor_amount:
+      type: decimal 11,2
+      description: "Importe del pago correspondiente al distribuidor y pendiente de liquidación."
+
+    external_transaction_id:
+      type: string 100
+      unique: true
+      description: "Identificador de la transacción exitosa proporcionado por el proveedor de pagos."
+
+    previous_expires_at:
+      type: date
+      description: "Fecha de expiración del dominio antes de aplicar el pago."
+
+    new_expires_at:
+      type: date
+      description: "Fecha de expiración del dominio después de aplicar el pago."

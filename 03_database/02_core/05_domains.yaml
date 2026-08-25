@@ -32,6 +32,10 @@ database_schema:
       type: integer unsigned
       description: "Cantidad máxima de cuentas de correo activas permitidas para el dominio."
 
+    mailbox_unit_price:
+      type: decimal 11,2
+      description: "Precio mensual por cuenta de correo definido por el distribuidor para el dominio."
+
   unique_constraints:
     - fields:
         - name
