@@ -52,6 +52,12 @@ database_schema:
       unique: true
       description: "Identificador de la transacción exitosa proporcionado por el proveedor de pagos."
 
+    external_invoice_id:
+      type: string 100
+      not_null: false
+      unique: true
+      description: "Identificador de la factura generada mediante el proveedor de facturación."
+
     previous_expires_at:
       type: date
       description: "Fecha de expiración del dominio antes de aplicar el pago."

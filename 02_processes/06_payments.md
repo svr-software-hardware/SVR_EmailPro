@@ -1,7 +1,7 @@
 # Gestión de Pagos
 
-**Versión:** 0.1.0  
-**Última actualización:** 2026-08-25
+**Versión:** 0.2.0  
+**Última actualización:** 2026-08-31
 
 ---
 
@@ -23,6 +23,7 @@ Incluye:
 - Registro de pagos exitosos.
 - Conservación de los valores utilizados para calcular cada pago.
 - Actualización de la fecha de expiración del dominio.
+- Inicio automático del proceso de facturación después de registrar un pago exitoso.
 - Consulta de pagos por parte del cliente y del distribuidor.
 - Cálculo del importe correspondiente a SVR y de la diferencia correspondiente al distribuidor.
 
@@ -30,7 +31,7 @@ No incluye:
 
 - Intentos de pago fallidos.
 - Definición de transacciones.
-- Facturación.
+- Reglas propias del proceso de facturación.
 - Tratamiento de impuestos.
 - Descuentos.
 - Promociones.
@@ -130,6 +131,8 @@ nueva_expiración = fecha_base + meses_pagados
 ```
 
 - El pago conserva la fecha de expiración anterior y la nueva fecha de expiración.
+- Después de registrar el pago y actualizar la fecha de expiración, el sistema inicia automáticamente el proceso de facturación.
+- Un error en la facturación no revierte el pago ni la actualización de la fecha de expiración.
 
 ---
 
@@ -183,6 +186,8 @@ Confirmar pago exitoso
 Registrar evidencia histórica del pago
     ↓
 Actualizar fecha de expiración del dominio
+    ↓
+Iniciar proceso de facturación
 ```
 
 ---
@@ -201,10 +206,12 @@ Actualizar fecha de expiración del dominio
 
 El pago pertenece al dominio porque cada dominio puede tener una capacidad, un precio y una vigencia diferentes.
 
-Los importes se conservan como valores finales de la operación. El tratamiento de impuestos se definirá posteriormente junto con el proceso de facturación.
+Los importes se conservan como valores finales de la operación. El tratamiento de impuestos no forma parte del alcance actual y deberá documentarse cuando sea definido por el negocio.
+
+El registro del pago y la actualización de la vigencia deben completarse antes de intentar generar la factura. La facturación constituye un proceso independiente y recuperable.
 
 La diferencia calculada para el distribuidor deberá utilizarse posteriormente en un proceso independiente de liquidaciones.
 
 La integración técnica con el proveedor de pagos, la autenticación reforzada y el manejo de respuestas técnicas pertenecen a la librería y a la implementación de la API, no a este proceso.
 
-Los procesos relacionados con transacciones, facturación, liquidaciones, tarjetas, suscripciones y acceso futuro de SVR deberán documentarse de forma independiente cuando sean requeridos por el negocio.
+Los procesos relacionados con transacciones, liquidaciones, tarjetas, suscripciones y acceso futuro de SVR deberán documentarse de forma independiente cuando sean requeridos por el negocio.
