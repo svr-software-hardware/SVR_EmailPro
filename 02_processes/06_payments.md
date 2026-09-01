@@ -1,7 +1,7 @@
 # Gestión de Pagos
 
-**Versión:** 0.2.0  
-**Última actualización:** 2026-08-31
+**Versión:** 0.3.0
+**Última actualización:** 2026-09-01
 
 ---
 
@@ -20,6 +20,9 @@ Incluye:
 - Selección del periodo de pago por parte del cliente.
 - Cálculo del importe según la capacidad del dominio.
 - Procesamiento del pago mediante el proveedor de pagos integrado.
+- Creación y seguimiento de intentos de pago.
+- Prevención de cobros duplicados mediante una llave de idempotencia.
+- Autenticación 3D Secure para operaciones que alcancen el importe configurado.
 - Registro de pagos exitosos.
 - Conservación de los valores utilizados para calcular cada pago.
 - Actualización de la fecha de expiración del dominio.
@@ -29,8 +32,7 @@ Incluye:
 
 No incluye:
 
-- Intentos de pago fallidos.
-- Definición de transacciones.
+- Historial detallado de eventos o comunicaciones con el proveedor de pagos.
 - Reglas propias del proceso de facturación.
 - Tratamiento de impuestos.
 - Descuentos.
@@ -80,6 +82,7 @@ En el alcance actual, el importe se obtiene mediante una multiplicación directa
 - La capacidad utilizada corresponde al límite de cuentas de correo vigente en el dominio al momento del pago.
 - El pago conserva una copia de la capacidad, el precio, el costo y la cantidad de meses utilizados en el cálculo.
 - El importe total pagado por el cliente se calcula de la siguiente manera:
+- El precio y el importe total cobrado al cliente ya incluyen IVA.
 
 ```text
 importe_cliente = precio_unitario_cliente × capacidad_dominio × meses
@@ -117,6 +120,31 @@ fecha_actual >= expires_at - 5 días
 
 ---
 
+# Intentos de Pago
+
+- Cada solicitud de cobro crea o recupera un intento identificado por una llave de idempotencia.
+- Una misma llave de idempotencia no puede utilizarse para dominios o periodos diferentes.
+- El intento conserva una copia de todos los valores utilizados para calcular el cobro antes de contactar al proveedor.
+- La información conservada en el intento no se recalcula al regresar de 3D Secure.
+- Un intento puede permanecer creado, pendiente, completado, fallido, cancelado, expirado o con estado desconocido.
+- Un intento completado origina como máximo un registro en Payments.
+- Los intentos fallidos, cancelados o expirados no generan un registro en Payments.
+- Para volver a intentar un cobro rechazado, el cliente debe iniciar una operación nueva con otra llave de idempotencia.
+- El identificador externo del proveedor debe ser único cuando exista.
+
+---
+
+# 3D Secure
+
+- El uso de 3D Secure se determina comparando el importe total contra un umbral configurable.
+- El umbral inicial es de 500.00 pesos y aplica también cuando el importe es exactamente igual.
+- Cuando el proveedor requiere interacción, el intento permanece pendiente y conserva la URL de redirección.
+- Al finalizar la interacción, EmailPro consulta nuevamente la operación mediante el identificador externo del proveedor.
+- El pago y la vigencia del dominio únicamente se registran cuando el proveedor confirma el cargo exitoso.
+- La pérdida o repetición de la respuesta del navegador no debe producir un segundo pago para el mismo intento.
+
+---
+
 # Actualización de la Expiración
 
 - La fecha de expiración se actualiza únicamente después de confirmar un pago exitoso.
@@ -140,7 +168,7 @@ nueva_expiración = fecha_base + meses_pagados
 
 - La entidad Payments contiene únicamente pagos exitosos.
 - Un intento fallido no genera un registro de pago.
-- Los intentos y resultados técnicos del proveedor se documentarán posteriormente mediante el proceso de transacciones.
+- Los intentos se conservan por separado y no forman parte del histórico de pagos exitosos.
 - Cada pago pertenece a un único dominio.
 - Cada pago conserva el periodo seleccionado.
 - Cada pago conserva la cantidad de cuentas cobradas.
@@ -181,6 +209,12 @@ Proporcionar información de pago
     ↓
 Procesar operación mediante el proveedor de pagos
     ↓
+¿Requiere 3D Secure?
+    ↓
+Conservar intento pendiente y redirigir al cliente
+    ↓
+Consultar el resultado definitivo al proveedor
+    ↓
 Confirmar pago exitoso
     ↓
 Registrar evidencia histórica del pago
@@ -198,6 +232,7 @@ Iniciar proceso de facturación
 - Clients
 - Domains
 - Payment Terms
+- Payment Intents
 - Payments
 
 ---
@@ -206,12 +241,14 @@ Iniciar proceso de facturación
 
 El pago pertenece al dominio porque cada dominio puede tener una capacidad, un precio y una vigencia diferentes.
 
-Los importes se conservan como valores finales de la operación. El tratamiento de impuestos no forma parte del alcance actual y deberá documentarse cuando sea definido por el negocio.
+Los importes se conservan como valores finales de la operación y representan cantidades con IVA incluido. La factura utiliza esos valores históricos y no agrega nuevamente el impuesto al importe cobrado.
 
 El registro del pago y la actualización de la vigencia deben completarse antes de intentar generar la factura. La facturación constituye un proceso independiente y recuperable.
 
 La diferencia calculada para el distribuidor deberá utilizarse posteriormente en un proceso independiente de liquidaciones.
 
 La integración técnica con el proveedor de pagos, la autenticación reforzada y el manejo de respuestas técnicas pertenecen a la librería y a la implementación de la API, no a este proceso.
+
+Payment Intents conserva únicamente el estado mínimo necesario para continuar una operación, garantizar idempotencia y convertir un cargo confirmado en un pago. No sustituye un historial técnico detallado de transacciones o eventos del proveedor.
 
 Los procesos relacionados con transacciones, liquidaciones, tarjetas, suscripciones y acceso futuro de SVR deberán documentarse de forma independiente cuando sean requeridos por el negocio.

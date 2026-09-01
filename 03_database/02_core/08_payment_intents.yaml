@@ -1,0 +1,79 @@
+metadata:
+  name: payment_intents
+  type: core_entity
+  description: "Intentos de cobro utilizados para continuar operaciones con 3D Secure y evitar cargos duplicados."
+
+database_schema:
+  table: payment_intents
+  table_es: "intentos de pago"
+  timestamps: true
+
+  fields:
+    domain_id:
+      type: bigint unsigned
+      references: domains.id
+      description: "Dominio cuya vigencia se intenta pagar."
+
+    payment_term_id:
+      type: bigint unsigned
+      references: payment_terms.id
+      description: "Periodo seleccionado al iniciar el intento."
+
+    idempotency_key:
+      type: uuid
+      unique: true
+      description: "Llave proporcionada para identificar de forma única la operación y evitar cargos duplicados."
+
+    status:
+      type: string 20
+      default: "created"
+      description: "Estado actual reportado para el intento de cobro."
+
+    mailbox_quantity:
+      type: integer unsigned
+      description: "Capacidad de cuentas conservada al iniciar el intento."
+
+    customer_unit_price:
+      type: decimal 11,2
+      description: "Precio mensual por cuenta conservado al iniciar el intento."
+
+    distributor_unit_cost:
+      type: decimal 11,2
+      description: "Costo mensual por cuenta conservado al iniciar el intento."
+
+    months:
+      type: integer unsigned
+      description: "Cantidad de meses conservada al iniciar el intento."
+
+    gross_amount:
+      type: decimal 11,2
+      description: "Importe total que se solicita cobrar al cliente."
+
+    svr_amount:
+      type: decimal 11,2
+      description: "Importe correspondiente a SVR conservado antes del cobro."
+
+    distributor_amount:
+      type: decimal 11,2
+      description: "Importe correspondiente al distribuidor conservado antes del cobro."
+
+    external_transaction_id:
+      type: string 100
+      not_null: false
+      unique: true
+      description: "Identificador asignado por el proveedor de pagos."
+
+    authorization:
+      type: string 100
+      not_null: false
+      description: "Código de autorización devuelto por el proveedor cuando existe."
+
+    redirect_url:
+      type: text
+      not_null: false
+      description: "URL proporcionada por el proveedor para completar 3D Secure."
+
+    provider_error:
+      type: text
+      not_null: false
+      description: "Último error reportado por el proveedor para el intento."

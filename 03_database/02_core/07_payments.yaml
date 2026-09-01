@@ -19,6 +19,12 @@ database_schema:
       references: payment_terms.id
       description: "Periodo seleccionado para realizar el pago."
 
+    payment_intent_id:
+      type: bigint unsigned
+      unique: true
+      references: payment_intents.id
+      description: "Intento confirmado que originó el pago y que impide registrar dos pagos para la misma operación."
+
     mailbox_quantity:
       type: integer unsigned
       description: "Capacidad de cuentas de correo cobrada al momento del pago."
@@ -52,11 +58,37 @@ database_schema:
       unique: true
       description: "Identificador de la transacción exitosa proporcionado por el proveedor de pagos."
 
-    external_invoice_id:
+    authorization:
+      type: string 100
+      not_null: false
+      description: "Código de autorización devuelto por el proveedor para el cargo exitoso."
+
+    invoice_status:
+      type: string 20
+      default: "pending"
+      description: "Estado actual de la facturación del pago."
+
+    invoice_provider_id:
       type: string 100
       not_null: false
       unique: true
       description: "Identificador de la factura generada mediante el proveedor de facturación."
+
+    invoice_uuid:
+      type: string 100
+      not_null: false
+      unique: true
+      description: "Folio fiscal UUID de la factura generada."
+
+    invoiced_at:
+      type: datetime
+      not_null: false
+      description: "Fecha y hora en que la facturación fue confirmada."
+
+    invoice_error:
+      type: text
+      not_null: false
+      description: "Último mensaje de error de facturación conservado para diagnóstico y reintento."
 
     previous_expires_at:
       type: date

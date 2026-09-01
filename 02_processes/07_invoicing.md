@@ -1,7 +1,7 @@
 # Facturación de Pagos
 
-**Versión:** 0.1.0  
-**Última actualización:** 2026-08-31
+**Versión:** 0.2.0
+**Última actualización:** 2026-09-01
 
 ---
 
@@ -18,15 +18,17 @@ Incluye:
 - Intento automático de facturación después de registrar un pago exitoso.
 - Generación de la factura mediante el proveedor de facturación integrado.
 - Utilización de la información fiscal vigente del cliente.
-- Conservación del identificador externo de la factura en el pago.
+- Conservación del estado, identificador externo, UUID y fecha de facturación en el pago.
+- Conservación del último error de facturación para diagnóstico y reintento.
 - Reintento manual de facturación por parte del cliente o del distribuidor.
 - Consulta de la factura por parte del cliente y del distribuidor.
 - Obtención de los documentos de la factura mediante el proveedor de facturación.
+- Generación de una sola factura de SVR al cliente por el importe total pagado.
+- Manejo del precio facturado como importe con IVA incluido.
 
 No incluye:
 
 - Historial de intentos de facturación.
-- Almacenamiento de mensajes de error.
 - Cancelación de facturas.
 - Sustitución de facturas.
 - Refacturación.
@@ -34,6 +36,7 @@ No incluye:
 - Definición técnica de impuestos.
 - Implementación del proveedor de facturación.
 - Consulta o administración de facturas por parte de SVR.
+- Facturación de SVR hacia el distribuidor.
 
 ---
 
@@ -41,18 +44,18 @@ No incluye:
 
 - Únicamente un pago exitoso puede facturarse.
 - Cada pago puede tener como máximo una factura asociada.
-- Un pago se considera pendiente de facturar cuando su identificador externo de factura es nulo.
-- Un pago se considera facturado cuando conserva un identificador externo de factura.
+- Un pago conserva un estado de facturación pendiente, completado o fallido.
+- Un pago se considera facturado cuando su estado es completado y conserva un identificador externo de factura.
 - Después de registrar un pago exitoso y actualizar la vigencia del dominio, el sistema intenta generar la factura automáticamente.
 - El registro del pago y la actualización de la vigencia deben completarse antes de iniciar la facturación.
 - Un error de facturación no revierte el pago ni modifica la fecha de expiración actualizada del dominio.
-- Si el intento automático falla, el pago permanece pendiente de facturar.
-- Mientras el pago permanezca pendiente, el cliente puede volver a intentar la facturación.
-- Mientras el pago permanezca pendiente, el distribuidor responsable del cliente puede volver a intentar la facturación.
+- Si el intento automático falla, el pago conserva el estado fallido y el último mensaje de error.
+- Mientras la facturación no esté completada, el cliente puede volver a intentar la facturación.
+- Mientras la facturación no esté completada, el distribuidor responsable del cliente puede volver a intentar la facturación.
 - Un pago que ya conserva un identificador externo de factura no puede facturarse nuevamente.
 - El identificador externo se registra únicamente después de que el proveedor confirma la creación de la factura.
 - Una vez registrado, el identificador externo de factura no puede modificarse ni reemplazarse.
-- Los errores se muestran durante el intento, pero no se almacenan en la base de datos.
+- Únicamente se conserva el último error de facturación; no se almacena un historial completo de intentos.
 - No se conserva un historial de intentos exitosos o fallidos.
 
 ---
@@ -71,11 +74,14 @@ No incluye:
 # Información del Pago
 
 - La factura utiliza el importe total histórico conservado en el pago.
+- El importe histórico ya incluye IVA y no debe incrementarse al formar la factura.
 - La factura utiliza la cantidad de cuentas de correo cobrada en el pago.
 - La factura utiliza el precio unitario aplicado al cliente en el pago.
 - La factura utiliza el periodo y la cantidad de meses conservados en el pago.
 - Los importes no se recalculan utilizando el precio, el costo o la capacidad actuales del dominio.
 - Los cambios posteriores en la configuración del dominio no modifican la factura ni los valores históricos del pago.
+- Las claves de producto o servicio, unidad, tipo y tasa de impuesto, forma de pago y método de pago son configurables.
+- Durante la integración inicial pueden utilizarse claves fiscales provisionales; deberán sustituirse por las claves definitivas sin modificar los pagos históricos.
 
 ---
 
@@ -103,9 +109,11 @@ Generar factura mediante el proveedor
 Proveedor confirma la factura
     ↓
 Guardar identificador externo en el pago
+    ↓
+Guardar UUID y fecha de facturación
 ```
 
-Si el proveedor rechaza la operación o la información fiscal no es válida, el pago conserva su identificador externo de factura nulo.
+Si el proveedor rechaza la operación o la información fiscal no es válida, el pago conserva su identificador externo de factura nulo, cambia a estado fallido y guarda el último error.
 
 ---
 
@@ -140,10 +148,12 @@ Guardar identificador externo en el pago
 
 # Observaciones
 
-El identificador de factura se conserva directamente en Payments porque la versión actual requiere únicamente conocer si un pago está pendiente o facturado y recuperar sus documentos externos.
+La información mínima de la factura se conserva directamente en Payments porque la versión actual requiere conocer su estado, diagnosticar el último fallo y recuperar sus documentos externos.
 
 No se crea una entidad local de facturas ni una entidad de intentos de facturación porque actualmente no existe una necesidad funcional que justifique su almacenamiento.
 
 La integración técnica, la formación de solicitudes y el manejo de respuestas del proveedor pertenecen a la librería y a la implementación de la API.
+
+La factura documentada en este proceso corresponde exclusivamente a SVR hacia el cliente. La facturación de SVR hacia el distribuidor se definirá posteriormente como un proceso independiente.
 
 Los procesos relacionados con cancelaciones, sustituciones, refacturación, historial de intentos y acceso futuro de SVR deberán documentarse de forma independiente cuando sean requeridos por el negocio.
