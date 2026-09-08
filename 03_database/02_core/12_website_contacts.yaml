@@ -1,0 +1,51 @@
+metadata:
+  name: website_contacts
+  type: core_entity
+  description: "Información de contacto mostrada en las páginas web de EmailPro."
+
+database_schema:
+  table: website_contacts
+  table_es: "contactos de páginas web"
+  timestamps: true
+
+  fields:
+    website_id:
+      type: bigint unsigned
+      unique: true
+      references: websites.id
+      description: "Página web a la que pertenece la información de contacto."
+
+    phone:
+      type: string 20
+      not_null: false
+      description: "Número telefónico mostrado como medio de contacto."
+
+    whatsapp:
+      type: string 20
+      not_null: false
+      description: "Número de WhatsApp mostrado como medio de contacto."
+
+    email:
+      type: string 254
+      not_null: false
+      description: "Correo electrónico mostrado como medio de contacto."
+
+    address:
+      type: text
+      not_null: false
+      description: "Dirección física mostrada en la página web."
+
+    location_url:
+      type: string 500
+      not_null: false
+      description: "Enlace utilizado para consultar la ubicación."
+
+    facebook_url:
+      type: string 500
+      not_null: false
+      description: "Enlace al perfil de Facebook."
+
+    instagram_url:
+      type: string 500
+      not_null: false
+      description: "Enlace al perfil de Instagram."

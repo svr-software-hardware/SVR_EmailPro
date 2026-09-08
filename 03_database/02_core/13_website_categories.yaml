@@ -1,0 +1,34 @@
+metadata:
+  name: website_categories
+  type: core_entity
+  description: "Categorías utilizadas para organizar los productos y servicios de las páginas web."
+
+database_schema:
+  table: website_categories
+  table_es: "categorías de páginas web"
+  timestamps: true
+
+  fields:
+    website_id:
+      type: bigint unsigned
+      references: websites.id
+      description: "Página web a la que pertenece la categoría."
+
+    name:
+      type: string 100
+      description: "Nombre utilizado para identificar la categoría de productos o servicios."
+
+    description:
+      type: text
+      not_null: false
+      description: "Descripción opcional de la categoría."
+
+    sort_order:
+      type: integer unsigned
+      description: "Orden de presentación de la categoría dentro de la página web."
+
+  unique_constraints:
+    - fields:
+        - website_id
+        - name
+      description: "Impide repetir el nombre de una categoría dentro de la misma página web."

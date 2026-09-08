@@ -1,0 +1,41 @@
+metadata:
+  name: websites
+  type: core_entity
+  description: "Páginas web asociadas a los dominios de EmailPro."
+
+database_schema:
+  table: websites
+  table_es: "páginas web"
+  timestamps: true
+
+  fields:
+    domain_id:
+      type: bigint unsigned
+      unique: true
+      references: domains.id
+      description: "Dominio al que pertenece la página web."
+
+    display_name:
+      type: string 150
+      description: "Nombre mostrado en la página web."
+
+    logo_filename:
+      type: string 255
+      not_null: false
+      description: "Nombre interno del archivo utilizado como logotipo."
+
+    primary_color:
+      type: string 7
+      description: "Color primario general en formato hexadecimal #RRGGBB."
+
+    secondary_color:
+      type: string 7
+      description: "Color secundario general en formato hexadecimal #RRGGBB."
+
+    banner_background_color:
+      type: string 7
+      description: "Color de fondo del banner en formato hexadecimal #RRGGBB."
+
+    banner_text_color:
+      type: string 7
+      description: "Color del texto del banner en formato hexadecimal #RRGGBB."

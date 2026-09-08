@@ -1,0 +1,42 @@
+metadata:
+  name: website_offerings
+  type: core_entity
+  description: "Productos y servicios mostrados en las páginas web de EmailPro."
+
+database_schema:
+  table: website_offerings
+  table_es: "productos y servicios de páginas web"
+  timestamps: true
+
+  fields:
+    website_category_id:
+      type: bigint unsigned
+      references: website_categories.id
+      description: "Categoría a la que pertenece el producto o servicio."
+
+    name:
+      type: string 150
+      description: "Nombre del producto o servicio."
+
+    description:
+      type: text
+      description: "Descripción del producto o servicio."
+
+    image_filename:
+      type: string 255
+      description: "Nombre interno de la imagen del producto o servicio."
+
+    price:
+      type: decimal 11,2
+      not_null: false
+      description: "Precio opcional mostrado para el producto o servicio."
+
+    sort_order:
+      type: integer unsigned
+      description: "Orden de presentación del producto o servicio dentro de su categoría."
+
+  unique_constraints:
+    - fields:
+        - website_category_id
+        - name
+      description: "Impide repetir el nombre de un producto o servicio dentro de la misma categoría."

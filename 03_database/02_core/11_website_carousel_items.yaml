@@ -1,0 +1,33 @@
+metadata:
+  name: website_carousel_items
+  type: core_entity
+  description: "Elementos mostrados en los carruseles de las páginas web de EmailPro."
+
+database_schema:
+  table: website_carousel_items
+  table_es: "elementos de carrusel de páginas web"
+  timestamps: true
+
+  fields:
+    website_id:
+      type: bigint unsigned
+      references: websites.id
+      description: "Página web a la que pertenece el elemento del carrusel."
+
+    image_filename:
+      type: string 255
+      description: "Nombre interno de la imagen mostrada en el carrusel."
+
+    title:
+      type: string 150
+      not_null: false
+      description: "Título opcional del elemento del carrusel."
+
+    description:
+      type: text
+      not_null: false
+      description: "Descripción opcional del elemento del carrusel."
+
+    sort_order:
+      type: integer unsigned
+      description: "Orden de presentación del elemento dentro del carrusel."

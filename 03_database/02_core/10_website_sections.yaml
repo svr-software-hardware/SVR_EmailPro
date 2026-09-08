@@ -1,0 +1,43 @@
+metadata:
+  name: website_sections
+  type: core_entity
+  description: "Secciones predeterminadas y personalizadas de las páginas web de EmailPro."
+
+database_schema:
+  table: website_sections
+  table_es: "secciones de páginas web"
+  timestamps: true
+
+  fields:
+    website_id:
+      type: bigint unsigned
+      references: websites.id
+      description: "Página web a la que pertenece la sección."
+
+    section_type:
+      type: string 30
+      description: "Tipo de sección utilizado para identificar su contenido y presentación."
+
+    title:
+      type: string 150
+      not_null: false
+      description: "Título mostrado en la sección."
+
+    subtitle:
+      type: string 255
+      not_null: false
+      description: "Subtítulo opcional utilizado únicamente cuando corresponde al tipo de sección."
+
+    description:
+      type: text
+      not_null: false
+      description: "Contenido descriptivo de la sección."
+
+    image_filename:
+      type: string 255
+      not_null: false
+      description: "Nombre interno de la imagen principal de la sección."
+
+    sort_order:
+      type: integer unsigned
+      description: "Orden de presentación de la sección dentro de la página web."
