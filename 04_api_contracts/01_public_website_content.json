@@ -1,0 +1,113 @@
+{
+  "website": {
+    "display_name": "Churros Carísimos de París",
+    "logo_url": "https://static.example.test/websites/churroscarisimosdeparis/logo.png",
+    "colors": {
+      "primary": "#8B4513",
+      "secondary": "#F4D03F",
+      "banner_background": "#FFF4D6",
+      "banner_text": "#3A220F"
+    }
+  },
+  "navbar": [
+    {
+      "label": "Churros Carísimos de París",
+      "target": "#home"
+    },
+    {
+      "label": "Nosotros",
+      "target": "#about"
+    },
+    {
+      "label": "Conoce nuestros churros",
+      "target": "#carousel"
+    },
+    {
+      "label": "Productos y servicios",
+      "target": "#offerings"
+    },
+    {
+      "label": "Contacto",
+      "target": "#contact"
+    },
+    {
+      "label": "Aviso de privacidad",
+      "target": "#privacy_notice"
+    }
+  ],
+  "sections": [
+    {
+      "type": "home",
+      "title": "Churros Carísimos de París",
+      "subtitle": "Un pedacito de París en cada bocado",
+      "description": "Churros preparados al momento con ingredientes seleccionados.",
+      "image_url": "https://static.example.test/websites/churroscarisimosdeparis/banner.jpg"
+    },
+    {
+      "type": "about",
+      "title": "Nosotros",
+      "subtitle": null,
+      "description": "Somos una empresa dedicada a preparar churros artesanales para toda ocasión.",
+      "image_url": "https://static.example.test/websites/churroscarisimosdeparis/about.jpg"
+    },
+    {
+      "type": "carousel",
+      "title": "Conoce nuestros churros",
+      "subtitle": null,
+      "description": null,
+      "image_url": null,
+      "items": [
+        {
+          "title": "Churros tradicionales",
+          "description": "Recién preparados y cubiertos con azúcar.",
+          "image_url": "https://static.example.test/websites/churroscarisimosdeparis/carousel/traditional.jpg"
+        },
+        {
+          "title": "Churros rellenos",
+          "description": "Disponibles con diferentes rellenos.",
+          "image_url": "https://static.example.test/websites/churroscarisimosdeparis/carousel/filled.jpg"
+        }
+      ]
+    },
+    {
+      "type": "offerings",
+      "title": "Productos y servicios",
+      "subtitle": null,
+      "description": "Consulta nuestras opciones disponibles.",
+      "image_url": null
+    },
+    {
+      "type": "custom",
+      "title": "Evento del 10 de mayo",
+      "subtitle": null,
+      "description": "Celebra con nosotros y conoce los paquetes que preparamos para esta fecha.",
+      "image_url": "https://static.example.test/websites/churroscarisimosdeparis/events/mothers-day.jpg"
+    },
+    {
+      "type": "contact",
+      "title": "Contacto",
+      "subtitle": null,
+      "description": "Comunicate con nosotros.",
+      "image_url": null,
+      "contact": {
+        "phone": "5512345678",
+        "phone_url": "tel:+525512345678",
+        "whatsapp": "5512345678",
+        "whatsapp_url": "https://wa.me/525512345678",
+        "email": "contacto@churroscarisimos.test",
+        "email_url": "mailto:contacto@churroscarisimos.test",
+        "address": "Avenida Principal 100, Ciudad de Mexico",
+        "location_url": "https://maps.example.test/churroscarisimosdeparis",
+        "facebook_url": "https://www.facebook.com/churroscarisimos",
+        "instagram_url": "https://www.instagram.com/churroscarisimos"
+      }
+    },
+    {
+      "type": "privacy_notice",
+      "title": "Aviso de privacidad",
+      "subtitle": null,
+      "description": "Consulta la información relacionada con el tratamiento de tus datos personales.",
+      "image_url": null
+    }
+  ]
+}
