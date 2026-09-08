@@ -1,6 +1,6 @@
 # Gestión de Páginas Web
 
-**Versión:** 0.2.0  
+**Versión:** 0.2.1  
 **Última actualización:** 2026-09-08
 
 ---
@@ -15,7 +15,7 @@ Definir las reglas de negocio para la activación y administración de la págin
 
 Incluye:
 
-- Activación de una página web por parte del cliente.
+- Activación de una página web por parte del cliente o de su distribuidor.
 - Asociación de una página web a un dominio.
 - Activación y desactivación posterior de la página.
 - Administración de la identidad visual general.
@@ -47,15 +47,14 @@ No incluye:
 - Cada página web pertenece a un único dominio.
 - Cada dominio puede tener como máximo una página web.
 - La página web no se crea automáticamente al registrar el dominio.
-- Solo el cliente propietario del dominio puede activar inicialmente su página web.
+- El cliente propietario del dominio y su distribuidor pueden activar inicialmente la página web.
 - El cliente puede modificar la información de su página web.
 - El distribuidor responsable del cliente puede modificar la información de la página web.
 - Un distribuidor únicamente puede modificar páginas pertenecientes a sus propios clientes.
-- El cliente puede desactivar y volver a activar su página web.
+- El cliente y su distribuidor pueden desactivar y volver a activar la página web.
 - La desactivación de la página web no elimina su contenido.
 - Las páginas web nunca se eliminan físicamente; únicamente pueden desactivarse.
 - La activación o desactivación de la página web no modifica el estado del dominio ni de sus cuentas de correo.
-- El distribuidor no puede activar inicialmente, desactivar ni reactivar la página web.
 
 ---
 
@@ -160,7 +159,7 @@ La API obtiene estos valores desde sus entidades originales cuando sean necesari
 # Flujo Principal
 
 ```text
-Cliente
+Cliente o distribuidor
     ↓
 Seleccionar uno de sus dominios
     ↓
