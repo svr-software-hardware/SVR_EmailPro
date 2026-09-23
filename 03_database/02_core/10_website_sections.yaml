@@ -34,7 +34,7 @@ database_schema:
       description: "Contenido descriptivo de la sección."
 
     image_filename:
-      type: string 255
+      type: string 45
       not_null: false
       description: "Nombre interno de la imagen principal de la sección."
 

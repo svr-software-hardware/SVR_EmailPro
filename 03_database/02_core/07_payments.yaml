@@ -25,6 +25,10 @@ database_schema:
       references: payment_intents.id
       description: "Intento confirmado que originó el pago y que impide registrar dos pagos para la misma operación."
 
+    requires_invoice:
+      type: boolean
+      description: "Indica si el cliente solicitó facturar el pago con su perfil fiscal en lugar de hacerlo a público en general."
+
     mailbox_quantity:
       type: integer unsigned
       description: "Capacidad de cuentas de correo cobrada al momento del pago."

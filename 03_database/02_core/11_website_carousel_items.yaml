@@ -15,7 +15,7 @@ database_schema:
       description: "Página web a la que pertenece el elemento del carrusel."
 
     image_filename:
-      type: string 255
+      type: string 45
       description: "Nombre interno de la imagen mostrada en el carrusel."
 
     title:

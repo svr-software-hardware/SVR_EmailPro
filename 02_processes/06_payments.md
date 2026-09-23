@@ -1,7 +1,7 @@
 # Gestión de Pagos
 
-**Versión:** 0.3.0
-**Última actualización:** 2026-09-01
+**Versión:** 0.5.0
+**Última actualización:** 2026-09-23
 
 ---
 
@@ -18,6 +18,7 @@ Incluye:
 - Definición del costo por cuenta de correo que SVR asigna a cada distribuidor.
 - Definición del precio por cuenta de correo que el distribuidor asigna a cada dominio.
 - Selección del periodo de pago por parte del cliente.
+- Selección de facturación con datos fiscales del cliente o a público en general.
 - Cálculo del importe según la capacidad del dominio.
 - Procesamiento del pago mediante el proveedor de pagos integrado.
 - Creación y seguimiento de intentos de pago.
@@ -26,7 +27,7 @@ Incluye:
 - Registro de pagos exitosos.
 - Conservación de los valores utilizados para calcular cada pago.
 - Actualización de la fecha de expiración del dominio.
-- Inicio automático del proceso de facturación después de registrar un pago exitoso.
+- Inicio automático del proceso de facturación seleccionado después de registrar un pago exitoso.
 - Consulta de pagos por parte del cliente y del distribuidor.
 - Cálculo del importe correspondiente a SVR y de la diferencia correspondiente al distribuidor.
 
@@ -107,24 +108,34 @@ importe_distribuidor = importe_cliente - importe_svr
 # Disponibilidad del Pago
 
 - Solo el cliente puede iniciar el pago de uno de sus dominios.
-- El pago únicamente puede iniciarse cuando falten cinco días o menos para la fecha de expiración del dominio.
+- El cliente puede iniciar un pago en cualquier momento, sin depender de la fecha de expiración del dominio.
 - Un dominio vencido puede recibir un pago.
 - Un dominio desactivado no puede recibir pagos.
 - El dominio debe conservar un precio válido respecto al costo vigente del distribuidor.
 
-La disponibilidad se determina de la siguiente manera:
+---
 
-```text
-fecha_actual >= expires_at - 5 días
-```
+# Selección de Facturación
+
+- Antes de iniciar el cobro, el cliente debe indicar si requiere una factura con sus datos fiscales.
+- La selección se representa mediante `requires_invoice`.
+- Cuando `requires_invoice` es `true`, la factura se genera con el perfil fiscal vigente del cliente.
+- Cuando `requires_invoice` es `false`, la factura se genera a público en general.
+- La selección debe conservarse en el intento de pago antes de contactar al proveedor.
+- La selección no se recalcula ni puede modificarse al regresar de 3D Secure.
+- El pago exitoso conserva la misma selección como información histórica.
+- La selección no puede modificarse después de registrar el pago exitoso.
+- La facturación a público en general no requiere que el cliente tenga un perfil fiscal completo.
+- La factura se genera después del pago exitoso en ambos casos.
 
 ---
 
 # Intentos de Pago
 
 - Cada solicitud de cobro crea o recupera un intento identificado por una llave de idempotencia.
-- Una misma llave de idempotencia no puede utilizarse para dominios o periodos diferentes.
+- Una misma llave de idempotencia no puede utilizarse para dominios, periodos o selecciones de facturación diferentes.
 - El intento conserva una copia de todos los valores utilizados para calcular el cobro antes de contactar al proveedor.
+- El intento conserva la selección `requires_invoice` antes de contactar al proveedor.
 - La información conservada en el intento no se recalcula al regresar de 3D Secure.
 - Un intento puede permanecer creado, pendiente, completado, fallido, cancelado, expirado o con estado desconocido.
 - Un intento completado origina como máximo un registro en Payments.
@@ -180,6 +191,7 @@ nueva_expiración = fecha_base + meses_pagados
 - Cada pago conserva el importe correspondiente al distribuidor.
 - Cada pago conserva el identificador externo de la transacción exitosa proporcionado por el proveedor de pagos.
 - Cada pago conserva la fecha de expiración anterior y la nueva fecha de expiración.
+- Cada pago conserva la selección `requires_invoice` utilizada para determinar el receptor de la factura.
 - La información utilizada para calcular un pago no se modifica aunque posteriormente cambien el costo, el precio o la capacidad del dominio.
 - Los pagos constituyen registros históricos y no se eliminan físicamente.
 
@@ -187,8 +199,10 @@ nueva_expiración = fecha_base + meses_pagados
 
 # Permisos de Consulta
 
-- El cliente puede consultar los pagos pertenecientes a sus dominios.
-- El distribuidor puede consultar los pagos de los dominios pertenecientes a sus clientes.
+- El listado de pagos requiere seleccionar un dominio.
+- El cliente puede consultar únicamente los pagos del dominio seleccionado cuando este le pertenece.
+- El distribuidor puede consultar únicamente los pagos del dominio seleccionado cuando este pertenece a uno de sus clientes.
+- Una solicitud sobre un dominio ajeno no revela su existencia.
 - El distribuidor no puede iniciar pagos en nombre de un cliente.
 - En el alcance actual, SVR no puede consultar ni administrar pagos.
 
@@ -202,6 +216,8 @@ Cliente
 Seleccionar dominio disponible para pago
     ↓
 Seleccionar periodo
+    ↓
+Indicar si requiere factura con datos fiscales
     ↓
 Calcular importes con los valores vigentes
     ↓

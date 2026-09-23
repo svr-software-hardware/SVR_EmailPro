@@ -23,7 +23,7 @@ database_schema:
       description: "Descripción del producto o servicio."
 
     image_filename:
-      type: string 255
+      type: string 45
       description: "Nombre interno de la imagen del producto o servicio."
 
     price:

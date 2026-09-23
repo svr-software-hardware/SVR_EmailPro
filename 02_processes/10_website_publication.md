@@ -1,6 +1,6 @@
 # Publicación de Páginas Web
 
-**Versión:** 0.1.1  
+**Versión:** 0.2.0  
 **Última actualización:** 2026-09-08
 
 ---
@@ -194,8 +194,10 @@ El objeto de contacto puede contener:
 # Imágenes
 
 - La base de datos conserva únicamente los nombres internos de los archivos.
-- La API transforma esos nombres en URLs utilizables por el frontend.
+- Las imágenes pertenecientes a las páginas se almacenan en el espacio público definido por `01_standards/file_storage_rules.md`.
+- La API resuelve esos nombres mediante el almacenamiento configurado y los transforma en URLs utilizables por el frontend.
 - Los campos `logo_url` e `image_url` nunca contienen imágenes codificadas en Base64.
+- El navegador obtiene directamente las imágenes mediante sus URLs públicas; la API no transmite su contenido binario.
 - Cuando una imagen opcional no existe, su URL se entrega como `null`.
 
 ---

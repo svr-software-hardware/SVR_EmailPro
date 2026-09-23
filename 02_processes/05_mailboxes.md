@@ -1,7 +1,7 @@
 # Gestión de Cuentas de Correo
 
-**Versión:** 0.1.0  
-**Última actualización:** 2026-08-21
+**Versión:** 0.2.0  
+**Última actualización:** 2026-09-23
 
 ---
 
@@ -16,7 +16,6 @@ Definir las reglas de negocio para el registro y administración de las cuentas 
 Incluye:
 
 - Registro de cuentas de correo por parte del distribuidor.
-- Registro de cuentas de correo por parte del cliente.
 - Modificación de la parte local de una cuenta de correo.
 - Activación y desactivación de cuentas de correo por parte del distribuidor.
 - Consulta de cuentas de correo por parte del distribuidor y del cliente.
@@ -41,8 +40,8 @@ No incluye:
 - Cada cuenta de correo pertenece a un único dominio.
 - Un dominio puede tener múltiples cuentas de correo.
 - El distribuidor puede registrar y modificar cuentas de correo únicamente en los dominios de los clientes que le pertenecen.
-- El cliente puede registrar y modificar cuentas de correo únicamente en sus propios dominios.
-- El distribuidor y el cliente pueden modificar la parte local de una cuenta de correo.
+- El cliente no puede registrar ni modificar cuentas de correo.
+- Solo el distribuidor puede modificar la parte local de una cuenta de correo.
 - Solo el distribuidor puede activar o desactivar una cuenta de correo.
 - Las cuentas de correo nunca se eliminan físicamente; únicamente pueden desactivarse.
 - Toda cuenta de correo se identifica mediante una parte local y el dominio al que pertenece.
@@ -63,7 +62,7 @@ No incluye:
 # Flujo Principal
 
 ```text
-Distribuidor o cliente
+Distribuidor
     ↓
 Seleccionar dominio permitido
     ↓

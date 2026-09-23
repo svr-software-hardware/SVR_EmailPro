@@ -1,7 +1,7 @@
 # Facturación de Pagos
 
-**Versión:** 0.2.0
-**Última actualización:** 2026-09-01
+**Versión:** 0.4.0
+**Última actualización:** 2026-09-23
 
 ---
 
@@ -18,6 +18,7 @@ Incluye:
 - Intento automático de facturación después de registrar un pago exitoso.
 - Generación de la factura mediante el proveedor de facturación integrado.
 - Utilización de la información fiscal vigente del cliente.
+- Facturación a público en general cuando el cliente no solicita utilizar sus datos fiscales.
 - Conservación del estado, identificador externo, UUID y fecha de facturación en el pago.
 - Conservación del último error de facturación para diagnóstico y reintento.
 - Reintento manual de facturación por parte del cliente o del distribuidor.
@@ -44,9 +45,13 @@ No incluye:
 
 - Únicamente un pago exitoso puede facturarse.
 - Cada pago puede tener como máximo una factura asociada.
+- Cada pago conserva mediante `requires_invoice` la selección realizada antes del cobro.
+- La selección de facturación no puede modificarse después de registrar el pago exitoso.
 - Un pago conserva un estado de facturación pendiente, completado o fallido.
 - Un pago se considera facturado cuando su estado es completado y conserva un identificador externo de factura.
 - Después de registrar un pago exitoso y actualizar la vigencia del dominio, el sistema intenta generar la factura automáticamente.
+- Cuando `requires_invoice` es `true`, la factura se genera con el perfil fiscal vigente del cliente.
+- Cuando `requires_invoice` es `false`, la factura se genera a público en general.
 - El registro del pago y la actualización de la vigencia deben completarse antes de iniciar la facturación.
 - Un error de facturación no revierte el pago ni modifica la fecha de expiración actualizada del dominio.
 - Si el intento automático falla, el pago conserva el estado fallido y el último mensaje de error.
@@ -62,12 +67,15 @@ No incluye:
 
 # Información Fiscal
 
-- La factura utiliza el perfil fiscal vigente del cliente asociado al dominio del pago.
-- El perfil fiscal debe existir y contener todos sus datos obligatorios antes de generar la factura.
-- La factura utiliza el régimen fiscal vigente del perfil.
-- La factura utiliza el uso CFDI predeterminado vigente del perfil.
-- Si la información fiscal está incompleta o no es válida, la factura no se genera y el pago permanece pendiente de facturar.
-- Un reintento utiliza la información fiscal vigente en el momento en que se realiza.
+- Cuando `requires_invoice` es `true`, la factura utiliza el perfil fiscal vigente del cliente asociado al dominio del pago.
+- Para una factura solicitada por el cliente, el perfil fiscal debe existir y contener todos sus datos obligatorios antes de generar la factura.
+- La factura solicitada por el cliente utiliza el régimen fiscal vigente del perfil.
+- La factura solicitada por el cliente utiliza el uso CFDI predeterminado vigente del perfil.
+- Si `requires_invoice` es `true` y la información fiscal está incompleta o no es válida, la factura no se genera y el pago permanece pendiente de facturar.
+- Un reintento de factura solicitada utiliza la información fiscal vigente en el momento en que se realiza.
+- Cuando `requires_invoice` es `false`, la factura utiliza los datos fiscales configurados para público en general.
+- La configuración fiscal de público en general no se obtiene del perfil fiscal del cliente.
+- Un reintento conserva el receptor determinado por `requires_invoice` y no permite cambiar entre el cliente y público en general.
 
 ---
 
@@ -92,6 +100,10 @@ No incluye:
 - En el alcance actual, SVR no puede consultar ni administrar facturas.
 - Los documentos de la factura se obtienen mediante el proveedor utilizando el identificador externo conservado en el pago.
 - Los archivos PDF y XML no se almacenan en la base de datos ni en el almacenamiento de EmailPro.
+- La solicitud autenticada genera una URL firmada y temporal para el documento solicitado.
+- La URL firmada puede abrirse en una pestaña nueva sin exponer el token de autenticación del cliente.
+- El documento se entrega en modo de visualización directa mediante su tipo de contenido correspondiente.
+- La URL deja de ser válida al concluir el periodo configurado.
 
 ---
 
@@ -102,7 +114,9 @@ Pago exitoso registrado
     ↓
 Vigencia del dominio actualizada
     ↓
-Obtener perfil fiscal vigente del cliente
+Consultar requires_invoice
+    ↓
+Obtener perfil fiscal vigente del cliente o configuración de público en general
     ↓
 Generar factura mediante el proveedor
     ↓
@@ -124,7 +138,9 @@ Cliente o distribuidor
     ↓
 Seleccionar pago pendiente de facturar
     ↓
-Obtener perfil fiscal vigente del cliente
+Consultar requires_invoice conservado en el pago
+    ↓
+Obtener perfil fiscal vigente del cliente o configuración de público en general
     ↓
 Generar factura mediante el proveedor
     ↓

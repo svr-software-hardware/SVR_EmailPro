@@ -19,6 +19,10 @@ database_schema:
       references: payment_terms.id
       description: "Periodo seleccionado al iniciar el intento."
 
+    requires_invoice:
+      type: boolean
+      description: "Indica si el cliente solicitó facturar el pago con su perfil fiscal en lugar de hacerlo a público en general."
+
     idempotency_key:
       type: uuid
       unique: true

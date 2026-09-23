@@ -20,7 +20,7 @@ database_schema:
       description: "Nombre mostrado en la página web."
 
     logo_filename:
-      type: string 255
+      type: string 45
       not_null: false
       description: "Nombre interno del archivo utilizado como logotipo."
 

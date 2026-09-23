@@ -1,7 +1,7 @@
 # Gestión de Dominios
 
-**Versión:** 0.2.0  
-**Última actualización:** 2026-08-25
+**Versión:** 0.3.0  
+**Última actualización:** 2026-09-23
 
 ---
 
@@ -23,6 +23,8 @@ Incluye:
 - Definición y actualización del precio mensual por cuenta de correo cobrado al cliente.
 - Activación y desactivación de dominios por parte del distribuidor.
 - Consulta de dominios por parte del cliente.
+- Consulta de dominios por parte de SVR.
+- Presentación del estado de vencimiento en los listados de SVR, distribuidores y clientes.
 
 No incluye:
 
@@ -30,11 +32,10 @@ No incluye:
 - Clientes.
 - Pagos.
 - Facturación.
-- Precios.
 - Comisiones.
 - Historial de renovaciones o expiraciones.
 - Integraciones con proveedores de dominios.
-- Consulta o administración de dominios por parte de SVR.
+- Administración de dominios por parte de SVR.
 
 ---
 
@@ -65,9 +66,42 @@ No incluye:
 - Solo el distribuidor puede modificar, activar o desactivar un dominio.
 - Los dominios nunca se eliminan físicamente; únicamente pueden desactivarse.
 - El cliente puede consultar sus dominios, pero no puede modificarlos, activarlos ni desactivarlos.
-- En el alcance actual, SVR no puede consultar ni administrar los dominios.
+- SVR puede consultar los dominios, pero no puede crearlos, modificarlos, activarlos ni desactivarlos.
 - El vencimiento del dominio permitirá detener posteriormente el servicio de sus cuentas de correo.
 - Los precios y cobros relacionados con la cantidad de cuentas de correo se definirán en un proceso independiente.
+
+---
+
+# Estado de Vencimiento
+
+El estado de vencimiento se calcula a partir de `expires_at` y de la fecha actual.
+
+Los valores entregados por la API son:
+
+- `expired`: la fecha de expiración es anterior a la fecha actual.
+- `expiring`: la fecha de expiración se encuentra entre la fecha actual y los próximos siete días, inclusive.
+- `no expired`: la fecha de expiración es posterior al periodo de siete días.
+
+El estado es información derivada y no se almacena en la entidad `domains`.
+
+Los listados de dominios del cliente, del distribuidor y de SVR deben entregar el mismo estado utilizando estas reglas.
+
+El frontend puede representar el estado mediante texto, color o un indicador visual. La presentación visual no modifica los valores entregados por la API.
+
+---
+
+# Listado Administrativo
+
+- El listado administrativo es una consulta exclusiva de SVR.
+- Los dominios se ordenan por fecha de expiración ascendente.
+- Los dominios más vencidos se presentan primero y los de vencimiento más lejano se presentan al final.
+- Para cada registro se presenta el nombre completo del dominio, formado por su nombre y extensión.
+- Para cada registro se presenta la fecha de expiración.
+- Para cada registro se presenta el estado de vencimiento calculado.
+- Para cada registro se presenta el costo por cuenta de correo vigente asignado por SVR al distribuidor responsable.
+- Para cada registro se presenta el nombre del distribuidor responsable.
+- El costo administrativo se obtiene de `distributors.mailbox_unit_cost`.
+- El listado administrativo no presenta `domains.mailbox_unit_price`, correspondiente al precio que el distribuidor cobra a su cliente.
 
 ---
 
