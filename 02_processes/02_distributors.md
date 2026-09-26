@@ -1,7 +1,7 @@
 # Gestión de Distribuidores
 
-**Versión:** 0.3.0  
-**Última actualización:** 2026-08-25
+**Versión:** 0.4.0  
+**Última actualización:** 2026-09-25
 
 ---
 
@@ -23,13 +23,15 @@ Incluye:
 - Captura y actualización de información fiscal.
 - Captura y actualización de la CLABE utilizada para recibir depósitos.
 - Administración del uso CFDI predeterminado.
+- Creación y actualización de la organización de facturación del distribuidor.
+- Carga directa del Certificado de Sello Digital mediante el proveedor de facturación.
 
 No incluye:
 
 - Clientes.
 - Autenticación.
 - Recuperación de contraseña.
-- Facturación.
+- Emisión de facturas relacionadas con pagos.
 - Cálculo o pago de comisiones.
 - Administración de múltiples usuarios por distribuidor.
 
@@ -62,6 +64,15 @@ No incluye:
 - El uso CFDI seleccionado más recientemente se conserva como uso predeterminado.
 - El uso CFDI predeterminado debe ser compatible con el régimen fiscal seleccionado conforme al catálogo fiscal vigente.
 - La CLABE representa la cuenta bancaria utilizada para realizar depósitos al distribuidor.
+- Al guardar un perfil fiscal por primera vez, el sistema crea una organización para el distribuidor mediante el proveedor de facturación.
+- El identificador externo de la organización se conserva en el distribuidor.
+- Si el perfil fiscal se modifica, sus datos se sincronizan con la organización existente y no se crea otra organización.
+- Si el perfil fiscal ya existía pero el distribuidor todavía no tiene una organización, el siguiente guardado o actualización debe intentar crearla.
+- Un error del proveedor no elimina ni revierte el perfil fiscal guardado; el distribuidor permanece sin habilitación para recibir pagos hasta completar su organización.
+- El distribuidor carga su archivo `.cer`, archivo `.key` y contraseña mediante un formulario protegido.
+- EmailPro transmite los archivos y la contraseña a la librería de facturación, pero no almacena ninguno de esos datos.
+- La organización debe completar los requisitos reportados por el proveedor para poder emitir CFDI en producción.
+- La disponibilidad para facturar se valida mediante el estado vigente de la organización en el proveedor y no mediante un indicador local permanente.
 - En el alcance actual, un distribuidor dispone de una sola cuenta de acceso.
 
 ---
@@ -91,7 +102,11 @@ Registrar CLABE
     ↓
 Registrar perfil fiscal
     ↓
-Distribuidor con información completa
+Crear y configurar organización de facturación
+    ↓
+Cargar Certificado de Sello Digital
+    ↓
+Organización lista para emitir CFDI
 ```
 
 ---
@@ -117,6 +132,8 @@ El nombre comercial pertenece al distribuidor. Los nombres, apellidos y correo e
 
 El costo por cuenta representa el importe mensual que corresponde a SVR por cada espacio de correo contratado mediante los dominios del distribuidor.
 
-La información fiscal pertenece al perfil fiscal asociado al distribuidor y no a su cuenta de usuario.
+La información fiscal pertenece al perfil fiscal asociado al distribuidor y no a su cuenta de usuario. El identificador de la organización de facturación pertenece al distribuidor porque únicamente los distribuidores actúan como emisores adicionales dentro de EmailPro.
+
+La organización puede requerir pasos adicionales definidos por el proveedor, como datos fiscales completos, suscripción activa y Carta Manifiesto. La API debe utilizar el estado de preparación reportado por la librería antes de habilitar pagos.
 
 Los procesos relacionados con facturación y múltiples usuarios por distribuidor deberán documentarse de forma independiente cuando sean requeridos por el negocio.

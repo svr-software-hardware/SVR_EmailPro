@@ -1,7 +1,7 @@
 # Gestión de Pagos
 
-**Versión:** 0.5.0
-**Última actualización:** 2026-09-23
+**Versión:** 0.6.0
+**Última actualización:** 2026-09-25
 
 ---
 
@@ -28,6 +28,7 @@ Incluye:
 - Conservación de los valores utilizados para calcular cada pago.
 - Actualización de la fecha de expiración del dominio.
 - Inicio automático del proceso de facturación seleccionado después de registrar un pago exitoso.
+- Validación de que la organización del distribuidor puede emitir CFDI.
 - Consulta de pagos por parte del cliente y del distribuidor.
 - Cálculo del importe correspondiente a SVR y de la diferencia correspondiente al distribuidor.
 
@@ -51,13 +52,14 @@ No incluye:
 - El costo asignado al distribuidor se utiliza para calcular la parte correspondiente a SVR.
 - El distribuidor define un precio por cuenta de correo para cada dominio.
 - Un mismo cliente puede tener precios diferentes en sus distintos dominios.
-- El precio definido para un dominio debe ser, como mínimo, un peso mayor que el costo vigente asignado al distribuidor.
+- El precio definido para un dominio debe ser igual o mayor que el costo vigente asignado al distribuidor.
+- El distribuidor puede vender sin margen de ganancia, pero no puede vender por debajo de su costo vigente.
 - El cliente puede consultar el precio de sus dominios, pero no puede modificarlo.
 - SVR puede modificar el costo asignado al distribuidor.
 - El distribuidor puede modificar el precio asignado a un dominio.
 - Los cambios de costo o precio aplican únicamente a pagos futuros.
 - Los pagos existentes conservan los valores utilizados cuando fueron realizados.
-- Si un cambio en el costo de SVR provoca que el precio de un dominio deje una diferencia menor a un peso, el dominio no puede recibir un nuevo pago hasta que el distribuidor actualice su precio.
+- Si un cambio en el costo de SVR provoca que el precio de un dominio quede por debajo de ese costo, el dominio no puede recibir un nuevo pago hasta que el distribuidor actualice su precio.
 - El sistema no modifica automáticamente el precio definido por el distribuidor.
 
 ---
@@ -112,6 +114,11 @@ importe_distribuidor = importe_cliente - importe_svr
 - Un dominio vencido puede recibir un pago.
 - Un dominio desactivado no puede recibir pagos.
 - El dominio debe conservar un precio válido respecto al costo vigente del distribuidor.
+- El distribuidor responsable debe tener un perfil fiscal completo.
+- El distribuidor debe conservar un identificador de organización de facturación.
+- Antes de iniciar el cobro, la API debe consultar mediante la librería que la organización del distribuidor se encuentra lista para emitir CFDI en producción.
+- Si la organización no está lista, el cliente no puede iniciar el pago.
+- Los archivos y contraseñas del Certificado de Sello Digital no se consultan ni almacenan durante el pago.
 
 ---
 
@@ -120,13 +127,13 @@ importe_distribuidor = importe_cliente - importe_svr
 - Antes de iniciar el cobro, el cliente debe indicar si requiere una factura con sus datos fiscales.
 - La selección se representa mediante `requires_invoice`.
 - Cuando `requires_invoice` es `true`, la factura se genera con el perfil fiscal vigente del cliente.
-- Cuando `requires_invoice` es `false`, la factura se genera a público en general.
+- Cuando `requires_invoice` es `false`, el pago genera un recibo que posteriormente se incorpora a la factura global diaria de público en general.
 - La selección debe conservarse en el intento de pago antes de contactar al proveedor.
 - La selección no se recalcula ni puede modificarse al regresar de 3D Secure.
 - El pago exitoso conserva la misma selección como información histórica.
 - La selección no puede modificarse después de registrar el pago exitoso.
 - La facturación a público en general no requiere que el cliente tenga un perfil fiscal completo.
-- La factura se genera después del pago exitoso en ambos casos.
+- La factura individual o el recibo se generan únicamente después del pago exitoso.
 
 ---
 
@@ -215,6 +222,8 @@ Cliente
     ↓
 Seleccionar dominio disponible para pago
     ↓
+Validar organización de facturación del distribuidor
+    ↓
 Seleccionar periodo
     ↓
 Indicar si requiere factura con datos fiscales
@@ -250,6 +259,9 @@ Iniciar proceso de facturación
 - Payment Terms
 - Payment Intents
 - Payments
+- Payment Receipts
+- Invoices
+- Invoice Payments
 
 ---
 
@@ -261,7 +273,7 @@ Los importes se conservan como valores finales de la operación y representan ca
 
 El registro del pago y la actualización de la vigencia deben completarse antes de intentar generar la factura. La facturación constituye un proceso independiente y recuperable.
 
-La diferencia calculada para el distribuidor deberá utilizarse posteriormente en un proceso independiente de liquidaciones.
+La diferencia calculada para el distribuidor se utiliza para emitir automáticamente una factura del distribuidor hacia SVR por cada pago. La transferencia bancaria correspondiente se definirá posteriormente en un proceso independiente de liquidaciones.
 
 La integración técnica con el proveedor de pagos, la autenticación reforzada y el manejo de respuestas técnicas pertenecen a la librería y a la implementación de la API, no a este proceso.
 

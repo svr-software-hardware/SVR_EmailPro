@@ -26,7 +26,7 @@ database_schema:
     expires_at:
       type: date
       default: current_date
-      description: "Fecha de expiración vigente del dominio, inicializada con su fecha de creación y actualizada mediante pagos."
+      description: "Fecha de expiración vigente del dominio, inicializada con su fecha de creación y actualizada mediante pagos o ajustes administrativos de SVR."
 
     mailbox_limit:
       type: integer unsigned

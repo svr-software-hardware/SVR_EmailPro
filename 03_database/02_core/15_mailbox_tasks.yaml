@@ -1,0 +1,72 @@
+metadata:
+  name: mailbox_tasks
+  type: core_entity
+  description: "Tareas solicitadas por distribuidores para que SVR aplique cambios de cuentas de correo en IONOS."
+
+database_schema:
+  table: mailbox_tasks
+  table_es: "tareas de cuentas de correo"
+  timestamps: true
+
+  fields:
+    domain_id:
+      type: bigint unsigned
+      references: domains.id
+      description: "Dominio al que pertenece la operación solicitada."
+
+    mailbox_id:
+      type: bigint unsigned
+      not_null: false
+      references: mailboxes.id
+      description: "Cuenta afectada por la tarea; permanece vacío durante una creación pendiente."
+
+    action:
+      type: string 20
+      description: "Operación solicitada: create, update, activate o deactivate."
+
+    previous_local_part:
+      type: string 64
+      not_null: false
+      description: "Parte local vigente antes de una modificación."
+
+    requested_local_part:
+      type: string 64
+      not_null: false
+      description: "Parte local solicitada para una creación o modificación."
+
+    previous_is_active:
+      type: boolean
+      not_null: false
+      description: "Estado vigente antes de una activación o desactivación."
+
+    requested_is_active:
+      type: boolean
+      not_null: false
+      description: "Estado solicitado para una activación o desactivación."
+
+    status:
+      type: string 20
+      default: "pending"
+      description: "Estado actual de la tarea: pending, completed o cancelled."
+
+    completed_at:
+      type: datetime
+      not_null: false
+      description: "Fecha y hora en que SVR confirmó la ejecución en IONOS."
+
+    completed_by_id:
+      type: bigint unsigned
+      not_null: false
+      references: users.id
+      description: "Usuario de SVR que confirmó la ejecución de la tarea."
+
+    cancelled_at:
+      type: datetime
+      not_null: false
+      description: "Fecha y hora en que la tarea pendiente fue cancelada."
+
+    cancelled_by_id:
+      type: bigint unsigned
+      not_null: false
+      references: users.id
+      description: "Usuario que canceló la tarea pendiente."

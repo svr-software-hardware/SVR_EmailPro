@@ -34,3 +34,9 @@ database_schema:
       unique: true
       references: fiscal_profiles.id
       description: "Perfil fiscal asociado al distribuidor."
+
+    invoice_organization_id:
+      type: string 100
+      not_null: false
+      unique: true
+      description: "Identificador externo de la organización del distribuidor en el proveedor de facturación."

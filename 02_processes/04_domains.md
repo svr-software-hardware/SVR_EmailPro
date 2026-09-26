@@ -1,7 +1,7 @@
 # Gestión de Dominios
 
-**Versión:** 0.3.0  
-**Última actualización:** 2026-09-23
+**Versión:** 0.4.0  
+**Última actualización:** 2026-09-25
 
 ---
 
@@ -24,6 +24,7 @@ Incluye:
 - Activación y desactivación de dominios por parte del distribuidor.
 - Consulta de dominios por parte del cliente.
 - Consulta de dominios por parte de SVR.
+- Modificación administrativa del nombre y la vigencia del dominio por parte de SVR.
 - Presentación del estado de vencimiento en los listados de SVR, distribuidores y clientes.
 
 No incluye:
@@ -35,7 +36,7 @@ No incluye:
 - Comisiones.
 - Historial de renovaciones o expiraciones.
 - Integraciones con proveedores de dominios.
-- Administración de dominios por parte de SVR.
+- Modificación de la extensión, capacidad, precio o estado del dominio por parte de SVR.
 
 ---
 
@@ -50,23 +51,27 @@ No incluye:
 - La extensión debe seleccionarse del catálogo de extensiones de dominio activas.
 - La combinación del nombre y la extensión debe ser única en EmailPro.
 - Al crear un dominio, el sistema establece su fecha de expiración con la fecha de creación.
-- La fecha de expiración no puede capturarse ni modificarse manualmente.
-- La fecha de expiración se actualiza únicamente cuando se registra un pago exitoso conforme al proceso de pagos.
+- La fecha de expiración no puede ser capturada ni modificada manualmente por el distribuidor o el cliente.
+- La fecha de expiración se actualiza cuando se registra un pago exitoso conforme al proceso de pagos o cuando SVR realiza un ajuste administrativo.
 - El sistema conserva únicamente la fecha de expiración vigente y no mantiene un historial de expiraciones.
 - El distribuidor define la cantidad máxima de cuentas de correo activas permitidas para el dominio.
 - La cantidad máxima de cuentas de correo debe ser un número entero mayor que cero.
 - Un dominio puede utilizar una cantidad de cuentas de correo menor que el límite definido.
 - Si se modifica el límite, el nuevo valor no puede ser menor que la cantidad de cuentas de correo que se encuentren activas en ese momento.
 - El distribuidor define el precio mensual por cuenta de correo para cada dominio.
-- El precio de un dominio debe ser, como mínimo, un peso mayor que el costo vigente asignado al distribuidor.
+- El precio de un dominio debe ser igual o mayor que el costo vigente asignado al distribuidor.
+- El distribuidor puede vender al cliente sin margen de ganancia, pero nunca por debajo de su costo vigente.
 - El distribuidor puede actualizar el precio del dominio.
 - Los cambios en el precio aplican únicamente a pagos futuros y no modifican pagos existentes.
 - El cliente puede consultar el precio de sus dominios, pero no puede modificarlo.
-- Si el costo de SVR aumenta y el precio deja una diferencia menor a un peso, el dominio no puede recibir nuevos pagos hasta que el distribuidor actualice su precio.
-- Solo el distribuidor puede modificar, activar o desactivar un dominio.
+- Si el costo de SVR aumenta y el precio del dominio queda por debajo de ese costo, el dominio no puede recibir nuevos pagos hasta que el distribuidor actualice su precio.
+- Después de registrar el dominio, el distribuidor no puede modificar su nombre ni su extensión.
+- El distribuidor puede modificar la capacidad de cuentas de correo y el precio asignado al dominio.
+- Solo el distribuidor puede activar o desactivar un dominio.
 - Los dominios nunca se eliminan físicamente; únicamente pueden desactivarse.
 - El cliente puede consultar sus dominios, pero no puede modificarlos, activarlos ni desactivarlos.
-- SVR puede consultar los dominios, pero no puede crearlos, modificarlos, activarlos ni desactivarlos.
+- SVR puede modificar únicamente el nombre y la fecha de expiración de un dominio.
+- SVR no puede modificar la extensión, capacidad, precio o estado activo del dominio.
 - El vencimiento del dominio permitirá detener posteriormente el servicio de sus cuentas de correo.
 - Los precios y cobros relacionados con la cantidad de cuentas de correo se definirán en un proceso independiente.
 
@@ -102,6 +107,8 @@ El frontend puede representar el estado mediante texto, color o un indicador vis
 - Para cada registro se presenta el nombre del distribuidor responsable.
 - El costo administrativo se obtiene de `distributors.mailbox_unit_cost`.
 - El listado administrativo no presenta `domains.mailbox_unit_price`, correspondiente al precio que el distribuidor cobra a su cliente.
+- Desde el listado administrativo, SVR puede corregir el nombre del dominio y su fecha de expiración.
+- La extensión del dominio no forma parte de la edición administrativa.
 
 ---
 
@@ -141,6 +148,6 @@ El límite de cuentas de correo representa la capacidad activa permitida para el
 
 El precio por cuenta pertenece al dominio porque un mismo cliente puede tener precios diferentes en cada uno de sus dominios.
 
-La fecha de expiración representa la vigencia del servicio del dominio. Su cálculo posterior dependerá del proceso de pagos y no forma parte de la administración manual del dominio.
+La fecha de expiración representa la vigencia del servicio del dominio. Normalmente se actualiza mediante el proceso de pagos, pero SVR puede corregirla administrativamente cuando sea necesario.
 
 Los procesos relacionados con suscripciones, facturación y acceso futuro de SVR deberán documentarse de forma independiente cuando sean requeridos por el negocio.

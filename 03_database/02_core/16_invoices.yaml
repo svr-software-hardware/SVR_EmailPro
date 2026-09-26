@@ -1,0 +1,56 @@
+metadata:
+  name: invoices
+  type: core_entity
+  description: "Facturas generadas para documentar los pagos de clientes y los importes correspondientes a distribuidores."
+
+database_schema:
+  table: invoices
+  table_es: "facturas"
+  timestamps: true
+
+  fields:
+    distributor_id:
+      type: bigint unsigned
+      not_null: false
+      references: distributors.id
+      description: "Distribuidor emisor cuando la factura corresponde al importe que debe recibir de SVR."
+
+    invoice_type:
+      type: string 30
+      description: "Tipo de factura: svr_to_customer, svr_global o distributor_to_svr."
+
+    status:
+      type: string 20
+      default: "pending"
+      description: "Estado actual de la factura: pending, completed o failed."
+
+    amount:
+      type: decimal 11,2
+      description: "Importe total histórico documentado por la factura."
+
+    global_period_date:
+      type: date
+      not_null: false
+      description: "Fecha del periodo diario cuando corresponde a una factura global."
+
+    provider_invoice_id:
+      type: string 100
+      not_null: false
+      unique: true
+      description: "Identificador asignado a la factura por el proveedor de facturación."
+
+    uuid:
+      type: string 100
+      not_null: false
+      unique: true
+      description: "Folio fiscal UUID de la factura confirmada."
+
+    invoiced_at:
+      type: datetime
+      not_null: false
+      description: "Fecha y hora en que el proveedor confirmó la factura."
+
+    last_error:
+      type: text
+      not_null: false
+      description: "Último error conservado para diagnóstico y reintento."

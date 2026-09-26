@@ -1,13 +1,18 @@
 # Facturación de Pagos
 
-**Versión:** 0.4.0
-**Última actualización:** 2026-09-23
+**Versión:** 1.0.0  
+**Última actualización:** 2026-09-25
 
 ---
 
 # Objetivo
 
-Definir las reglas de negocio para generar y consultar la factura correspondiente a un pago exitoso de EmailPro.
+Definir las facturas y recibos que se generan después de un pago exitoso de EmailPro.
+
+Cada pago origina documentación fiscal en dos direcciones:
+
+- SVR documenta el importe pagado por el cliente.
+- El distribuidor factura a SVR el importe que le corresponde por ese pago.
 
 ---
 
@@ -15,161 +20,256 @@ Definir las reglas de negocio para generar y consultar la factura correspondient
 
 Incluye:
 
-- Intento automático de facturación después de registrar un pago exitoso.
-- Generación de la factura mediante el proveedor de facturación integrado.
-- Utilización de la información fiscal vigente del cliente.
-- Facturación a público en general cuando el cliente no solicita utilizar sus datos fiscales.
-- Conservación del estado, identificador externo, UUID y fecha de facturación en el pago.
-- Conservación del último error de facturación para diagnóstico y reintento.
-- Reintento manual de facturación por parte del cliente o del distribuidor.
-- Consulta de la factura por parte del cliente y del distribuidor.
-- Obtención de los documentos de la factura mediante el proveedor de facturación.
-- Generación de una sola factura de SVR al cliente por el importe total pagado.
-- Manejo del precio facturado como importe con IVA incluido.
+- Factura individual de SVR al cliente cuando este la solicita.
+- Recibo electrónico cuando el cliente no solicita factura individual.
+- Factura global diaria de SVR a público en general.
+- Factura automática del distribuidor hacia SVR por cada pago.
+- Conservación independiente de cada CFDI.
+- Asociación de una factura con uno o múltiples pagos.
+- Estados de facturación y último error de cada factura o recibo.
+- Reintentos sin revertir el pago ni la vigencia.
+- Consulta de documentos mediante URLs firmadas y temporales.
 
 No incluye:
 
-- Historial de intentos de facturación.
-- Cancelación de facturas.
-- Sustitución de facturas.
-- Refacturación.
+- Historial detallado de intentos de facturación.
+- Cancelación, sustitución o refacturación de CFDI.
 - Almacenamiento local de archivos PDF o XML.
-- Definición técnica de impuestos.
-- Implementación del proveedor de facturación.
-- Consulta o administración de facturas por parte de SVR.
-- Facturación de SVR hacia el distribuidor.
+- Definición técnica de impuestos o catálogos fiscales.
+- Transferencias o liquidaciones bancarias a distribuidores.
+- Generación del archivo bancario para BBVA.
 
 ---
 
-# Reglas de Negocio
+# Principios
 
-- Únicamente un pago exitoso puede facturarse.
-- Cada pago puede tener como máximo una factura asociada.
-- Cada pago conserva mediante `requires_invoice` la selección realizada antes del cobro.
-- La selección de facturación no puede modificarse después de registrar el pago exitoso.
-- Un pago conserva un estado de facturación pendiente, completado o fallido.
-- Un pago se considera facturado cuando su estado es completado y conserva un identificador externo de factura.
-- Después de registrar un pago exitoso y actualizar la vigencia del dominio, el sistema intenta generar la factura automáticamente.
-- Cuando `requires_invoice` es `true`, la factura se genera con el perfil fiscal vigente del cliente.
-- Cuando `requires_invoice` es `false`, la factura se genera a público en general.
-- El registro del pago y la actualización de la vigencia deben completarse antes de iniciar la facturación.
-- Un error de facturación no revierte el pago ni modifica la fecha de expiración actualizada del dominio.
-- Si el intento automático falla, el pago conserva el estado fallido y el último mensaje de error.
-- Mientras la facturación no esté completada, el cliente puede volver a intentar la facturación.
-- Mientras la facturación no esté completada, el distribuidor responsable del cliente puede volver a intentar la facturación.
-- Un pago que ya conserva un identificador externo de factura no puede facturarse nuevamente.
-- El identificador externo se registra únicamente después de que el proveedor confirma la creación de la factura.
-- Una vez registrado, el identificador externo de factura no puede modificarse ni reemplazarse.
-- Únicamente se conserva el último error de facturación; no se almacena un historial completo de intentos.
-- No se conserva un historial de intentos exitosos o fallidos.
+- Únicamente un pago exitoso puede iniciar estos procesos.
+- Un error de facturación no revierte el pago ni la vigencia otorgada al dominio.
+- Los importes se obtienen de los valores históricos conservados en el pago.
+- Los importes no se recalculan utilizando precios, costos o capacidades actuales.
+- Los CFDI, recibos y errores se conservan separados del registro principal del pago.
+- Los archivos PDF y XML permanecen en el proveedor de facturación.
+- EmailPro no almacena Certificados de Sello Digital, llaves privadas ni sus contraseñas.
 
 ---
 
-# Información Fiscal
+# Tipos de Factura
 
-- Cuando `requires_invoice` es `true`, la factura utiliza el perfil fiscal vigente del cliente asociado al dominio del pago.
-- Para una factura solicitada por el cliente, el perfil fiscal debe existir y contener todos sus datos obligatorios antes de generar la factura.
-- La factura solicitada por el cliente utiliza el régimen fiscal vigente del perfil.
-- La factura solicitada por el cliente utiliza el uso CFDI predeterminado vigente del perfil.
-- Si `requires_invoice` es `true` y la información fiscal está incompleta o no es válida, la factura no se genera y el pago permanece pendiente de facturar.
-- Un reintento de factura solicitada utiliza la información fiscal vigente en el momento en que se realiza.
-- Cuando `requires_invoice` es `false`, la factura utiliza los datos fiscales configurados para público en general.
-- La configuración fiscal de público en general no se obtiene del perfil fiscal del cliente.
-- Un reintento conserva el receptor determinado por `requires_invoice` y no permite cambiar entre el cliente y público en general.
+La entidad `invoices` utiliza los siguientes tipos:
 
----
+- `svr_to_customer`: factura individual emitida por SVR al cliente.
+- `svr_global`: factura global diaria emitida por SVR a público en general.
+- `distributor_to_svr`: factura emitida por el distribuidor a SVR.
 
-# Información del Pago
+Una factura individual se relaciona con un pago.
 
-- La factura utiliza el importe total histórico conservado en el pago.
-- El importe histórico ya incluye IVA y no debe incrementarse al formar la factura.
-- La factura utiliza la cantidad de cuentas de correo cobrada en el pago.
-- La factura utiliza el precio unitario aplicado al cliente en el pago.
-- La factura utiliza el periodo y la cantidad de meses conservados en el pago.
-- Los importes no se recalculan utilizando el precio, el costo o la capacidad actuales del dominio.
-- Los cambios posteriores en la configuración del dominio no modifican la factura ni los valores históricos del pago.
-- Las claves de producto o servicio, unidad, tipo y tasa de impuesto, forma de pago y método de pago son configurables.
-- Durante la integración inicial pueden utilizarse claves fiscales provisionales; deberán sustituirse por las claves definitivas sin modificar los pagos históricos.
+Una factura del distribuidor se relaciona con un pago.
+
+Una factura global puede relacionarse con múltiples pagos mediante `invoice_payments`.
 
 ---
 
-# Consulta de la Factura
+# Estados de Factura
 
-- El cliente puede consultar las facturas correspondientes a los pagos de sus dominios.
-- El distribuidor puede consultar las facturas correspondientes a los pagos de los dominios pertenecientes a sus clientes.
-- En el alcance actual, SVR no puede consultar ni administrar facturas.
-- Los documentos de la factura se obtienen mediante el proveedor utilizando el identificador externo conservado en el pago.
-- Los archivos PDF y XML no se almacenan en la base de datos ni en el almacenamiento de EmailPro.
-- La solicitud autenticada genera una URL firmada y temporal para el documento solicitado.
-- La URL firmada puede abrirse en una pestaña nueva sin exponer el token de autenticación del cliente.
+Los estados permitidos son:
+
+- `pending`: todavía no se ha confirmado la creación del CFDI.
+- `completed`: el proveedor confirmó el CFDI.
+- `failed`: el último intento no pudo completarse.
+
+Una factura completada conserva su identificador externo, UUID y fecha de emisión.
+
+Una factura completada no puede generarse nuevamente.
+
+Únicamente se conserva el último error; no se crea un historial técnico de intentos.
+
+---
+
+# Selección del Cliente
+
+- El pago conserva la selección `requires_invoice` realizada antes del cobro.
+- La selección no puede modificarse después de registrar el pago exitoso.
+- Cuando `requires_invoice` es `true`, SVR genera una factura individual al cliente.
+- Cuando `requires_invoice` es `false`, SVR genera un recibo electrónico para incorporar la operación a una factura global diaria.
+- En ambos casos, el importe documentado por SVR es `payments.gross_amount`.
+
+---
+
+# Factura Individual de SVR al Cliente
+
+- La factura utiliza el perfil fiscal vigente del cliente asociado al dominio.
+- El perfil fiscal debe existir y contener todos sus datos obligatorios.
+- La factura utiliza el régimen fiscal y el uso CFDI vigentes al momento del intento.
+- Si la información fiscal está incompleta o no es válida, la factura permanece fallida y puede reintentarse.
+- Un reintento utiliza la información fiscal vigente en ese momento.
+- La factura conserva el importe total histórico pagado por el cliente.
+- La factura utiliza la cantidad de cuentas, precio unitario, periodo y meses conservados en el pago.
+- El importe histórico ya incluye IVA y no se incrementa nuevamente.
+- Cada pago puede asociarse como máximo a una factura de tipo `svr_to_customer`.
+
+---
+
+# Recibos de Público en General
+
+- Cada pago con `requires_invoice` igual a `false` genera un registro en `payment_receipts`.
+- Cada pago puede tener como máximo un recibo.
+- El recibo utiliza `payments.gross_amount`.
+- El recibo conserva el identificador asignado por el proveedor.
+- Un recibo pendiente o fallido puede reintentarse sin volver a cobrar al cliente.
+- Un recibo abierto todavía no representa el CFDI global definitivo.
+- Después de incorporarse a una factura global, el recibo cambia a estado `invoiced_globally`.
+
+Los estados locales del recibo son:
+
+- `pending`.
+- `open`.
+- `invoiced_globally`.
+- `failed`.
+
+---
+
+# Factura Global Diaria
+
+- SVR genera una factura global diaria con los recibos abiertos correspondientes al periodo.
+- La factura se emite a público en general.
+- La fecha del periodo se conserva en la factura.
+- Al confirmar la factura global, cada pago incluido se relaciona con ella mediante `invoice_payments`.
+- Los recibos incluidos cambian a `invoiced_globally`.
+- La suma de `gross_amount` de los pagos relacionados debe corresponder al importe de la factura global.
+- Un fallo en la factura global conserva abiertos los recibos para permitir un reintento.
+- La generación debe ser idempotente y no puede incluir dos veces el mismo pago.
+- Los pagos de clientes que solicitaron factura individual no se incorporan a la factura global.
+
+---
+
+# Factura del Distribuidor hacia SVR
+
+- Después de completar la documentación fiscal de SVR correspondiente al pago, el sistema genera automáticamente una factura del distribuidor hacia SVR.
+- No se requiere confirmación manual del distribuidor.
+- Se genera una factura independiente por cada pago.
+- El emisor es la organización de facturación del distribuidor responsable del dominio.
+- El receptor es SVR.
+- El importe es exactamente `payments.distributor_amount`.
+- Cada pago puede asociarse como máximo a una factura de tipo `distributor_to_svr`.
+- La organización del distribuidor debe estar lista para emitir CFDI en producción.
+- Si la factura del distribuidor falla, el pago y la documentación emitida por SVR permanecen válidos.
+- La factura fallida puede reintentarse sin volver a cobrar al cliente ni duplicar la factura de SVR.
+- Una factura del distribuidor completada será requisito para el proceso posterior de liquidación.
+
+Para una factura individual solicitada por el cliente, la factura del distribuidor puede generarse después de completar `svr_to_customer`.
+
+Para una operación de público en general, la factura del distribuidor se genera después de que el pago quede incluido en la factura `svr_global` correspondiente.
+
+---
+
+# Organización del Distribuidor
+
+- El identificador externo de la organización se obtiene de `distributors.invoice_organization_id`.
+- La API debe validar mediante la librería que la organización continúa lista para facturar.
+- EmailPro no almacena los archivos `.cer`, `.key` ni su contraseña.
+- La librería utiliza la organización para emitir el CFDI en nombre del distribuidor.
+- Los datos fiscales de la organización deben corresponder al perfil fiscal vigente del distribuidor.
+
+---
+
+# Asociación entre Facturas y Pagos
+
+- La relación se conserva en `invoice_payments`.
+- Una factura puede incluir uno o múltiples pagos.
+- Un pago puede asociarse a más de una factura porque documenta operaciones en sentidos distintos: la emitida por SVR al cliente y la emitida por el distribuidor a SVR.
+- La combinación de factura y pago debe ser única.
+- Un pago no puede asociarse a dos facturas completadas del mismo tipo.
+- La relación no modifica los importes históricos del pago.
+
+---
+
+# Consulta de Documentos
+
+- El cliente puede consultar la factura individual de sus pagos cuando la solicitó.
+- El cliente no consulta la factura emitida por el distribuidor hacia SVR.
+- El distribuidor puede consultar las facturas individuales correspondientes a los pagos de sus clientes.
+- El distribuidor puede consultar las facturas que su organización emitió hacia SVR.
+- SVR puede consultar las facturas relacionadas con los pagos y distribuidores.
+- Los documentos se obtienen del proveedor mediante el identificador externo de la factura.
+- La solicitud autenticada genera una URL firmada y temporal para PDF o XML.
+- La URL puede abrirse en una pestaña nueva sin exponer el token de autenticación.
 - El documento se entrega en modo de visualización directa mediante su tipo de contenido correspondiente.
 - La URL deja de ser válida al concluir el periodo configurado.
 
 ---
 
-# Flujo Automático
+# Flujo con Factura Individual
 
 ```text
-Pago exitoso registrado
+Pago exitoso con requires_invoice = true
     ↓
-Vigencia del dominio actualizada
+Actualizar vigencia del dominio
     ↓
-Consultar requires_invoice
+Crear factura svr_to_customer
     ↓
-Obtener perfil fiscal vigente del cliente o configuración de público en general
+Proveedor confirma el CFDI
     ↓
-Generar factura mediante el proveedor
+Crear factura distributor_to_svr por distributor_amount
     ↓
-Proveedor confirma la factura
+Organización del distribuidor emite el CFDI a SVR
     ↓
-Guardar identificador externo en el pago
-    ↓
-Guardar UUID y fecha de facturación
+Facturación del pago completada
 ```
-
-Si el proveedor rechaza la operación o la información fiscal no es válida, el pago conserva su identificador externo de factura nulo, cambia a estado fallido y guarda el último error.
 
 ---
 
-# Flujo de Reintento
+# Flujo con Público en General
 
 ```text
-Cliente o distribuidor
+Pago exitoso con requires_invoice = false
     ↓
-Seleccionar pago pendiente de facturar
+Actualizar vigencia del dominio
     ↓
-Consultar requires_invoice conservado en el pago
+Crear recibo electrónico por gross_amount
     ↓
-Obtener perfil fiscal vigente del cliente o configuración de público en general
+Conservar recibo abierto
     ↓
-Generar factura mediante el proveedor
+Cierre diario
     ↓
-Proveedor confirma la factura
+Crear factura svr_global con recibos abiertos
     ↓
-Guardar identificador externo en el pago
+Relacionar factura global con sus pagos
+    ↓
+Crear una factura distributor_to_svr por cada pago incluido
+    ↓
+Organizaciones de distribuidores emiten sus CFDI a SVR
 ```
+
+---
+
+# Recuperación de Errores
+
+- Cada factura y recibo conserva su propio estado y último error.
+- Un reintento utiliza el mismo registro local.
+- Antes de reintentar, la implementación debe consultar el proveedor cuando exista la posibilidad de que la respuesta anterior se haya perdido.
+- Un reintento no puede crear un CFDI duplicado para el mismo tipo y pago.
+- Los errores de la factura del distribuidor no bloquean el acceso del cliente al servicio ya pagado.
+- Los errores pendientes sí pueden impedir la liquidación posterior al distribuidor.
 
 ---
 
 # Entidades
 
+- Distributors
 - Clients
 - Domains
 - Fiscal Profiles
-- Fiscal Regimes
-- CFDI Usages
 - Payments
+- Payment Receipts
+- Invoices
+- Invoice Payments
 
 ---
 
 # Observaciones
 
-La información mínima de la factura se conserva directamente en Payments porque la versión actual requiere conocer su estado, diagnosticar el último fallo y recuperar sus documentos externos.
+Las claves de producto o servicio, unidad, impuestos, forma de pago y método de pago pertenecen a la configuración de la integración fiscal.
 
-No se crea una entidad local de facturas ni una entidad de intentos de facturación porque actualmente no existe una necesidad funcional que justifique su almacenamiento.
+La factura global diaria permite consolidar operaciones de público en general sin perder la relación entre cada pago y su recibo.
 
-La integración técnica, la formación de solicitudes y el manejo de respuestas del proveedor pertenecen a la librería y a la implementación de la API.
-
-La factura documentada en este proceso corresponde exclusivamente a SVR hacia el cliente. La facturación de SVR hacia el distribuidor se definirá posteriormente como un proceso independiente.
-
-Los procesos relacionados con cancelaciones, sustituciones, refacturación, historial de intentos y acceso futuro de SVR deberán documentarse de forma independiente cuando sean requeridos por el negocio.
+El proceso bancario que agrupe o liquide cantidades a distribuidores será independiente. La existencia de una factura `distributor_to_svr` no confirma que el importe ya haya sido transferido.

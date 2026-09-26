@@ -1,0 +1,32 @@
+metadata:
+  name: payment_receipts
+  type: core_entity
+  description: "Recibos de pagos que deben incorporarse a facturas globales de público en general."
+
+database_schema:
+  table: payment_receipts
+  table_es: "recibos de pagos"
+  timestamps: true
+
+  fields:
+    payment_id:
+      type: bigint unsigned
+      unique: true
+      references: payments.id
+      description: "Pago realizado sin solicitud de factura individual."
+
+    status:
+      type: string 20
+      default: "pending"
+      description: "Estado actual del recibo: pending, open, invoiced_globally o failed."
+
+    provider_receipt_id:
+      type: string 100
+      not_null: false
+      unique: true
+      description: "Identificador asignado al recibo por el proveedor de facturación."
+
+    last_error:
+      type: text
+      not_null: false
+      description: "Último error conservado para diagnóstico y reintento del recibo."

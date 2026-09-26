@@ -1,0 +1,26 @@
+metadata:
+  name: invoice_payments
+  type: core_entity
+  description: "Relaciones entre las facturas emitidas y los pagos que documentan."
+
+database_schema:
+  table: invoice_payments
+  table_es: "pagos de facturas"
+  timestamps: true
+
+  fields:
+    invoice_id:
+      type: bigint unsigned
+      references: invoices.id
+      description: "Factura que documenta el pago relacionado."
+
+    payment_id:
+      type: bigint unsigned
+      references: payments.id
+      description: "Pago incluido en la factura."
+
+  unique_constraints:
+    - fields:
+        - invoice_id
+        - payment_id
+      description: "Impide relacionar más de una vez el mismo pago con una factura."
