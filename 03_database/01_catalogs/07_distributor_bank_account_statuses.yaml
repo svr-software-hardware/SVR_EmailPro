@@ -1,0 +1,49 @@
+metadata:
+  name: distributor_bank_account_statuses
+  type: general_catalog
+  description: "Estados disponibles para la validación y conservación de las cuentas bancarias de distribuidores."
+
+database_schema:
+  table: distributor_bank_account_statuses
+  table_es: "estados de cuentas bancarias de distribuidores"
+
+  fields:
+    code:
+      type: string 30
+      unique: true
+      description: "Código estable utilizado para identificar el estado."
+
+    name:
+      type: string 100
+      unique: true
+      description: "Nombre del estado de la cuenta bancaria."
+
+    description:
+      type: string 255
+      description: "Descripción funcional del estado."
+
+seed_data:
+  - id: 1
+    code: "pending"
+    name: "Pendiente"
+    description: "La cuenta espera la revisión de SVR."
+
+  - id: 2
+    code: "verified"
+    name: "Verificada"
+    description: "SVR confirmó que la cuenta puede utilizarse en nuevas órdenes de pago."
+
+  - id: 3
+    code: "rejected"
+    name: "Rechazada"
+    description: "SVR rechazó la información bancaria presentada."
+
+  - id: 4
+    code: "cancelled"
+    name: "Cancelada"
+    description: "El distribuidor canceló la solicitud antes de su resolución."
+
+  - id: 5
+    code: "replaced"
+    name: "Sustituida"
+    description: "La cuenta dejó de estar vigente al validarse una cuenta posterior."

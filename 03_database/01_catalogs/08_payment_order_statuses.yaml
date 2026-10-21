@@ -1,0 +1,49 @@
+metadata:
+  name: payment_order_statuses
+  type: general_catalog
+  description: "Estados generales del procesamiento de las órdenes de pago."
+
+database_schema:
+  table: payment_order_statuses
+  table_es: "estados de órdenes de pago"
+
+  fields:
+    code:
+      type: string 30
+      unique: true
+      description: "Código estable utilizado para identificar el estado."
+
+    name:
+      type: string 100
+      unique: true
+      description: "Nombre del estado de la orden."
+
+    description:
+      type: string 255
+      description: "Descripción funcional del estado."
+
+seed_data:
+  - id: 1
+    code: "generated"
+    name: "Generada"
+    description: "La orden fue creada y su archivo TXT está disponible."
+
+  - id: 2
+    code: "submitted"
+    name: "Presentada"
+    description: "Un Super Admin confirmó que el TXT fue presentado en BBVA."
+
+  - id: 3
+    code: "partially_reconciled"
+    name: "Conciliada parcialmente"
+    description: "La respuesta bancaria fue procesada, pero existen movimientos pendientes de resolución."
+
+  - id: 4
+    code: "completed"
+    name: "Completada"
+    description: "Todos los movimientos de la orden tienen una resolución final."
+
+  - id: 5
+    code: "cancelled"
+    name: "Cancelada"
+    description: "La orden fue cancelada antes de presentarse en BBVA."

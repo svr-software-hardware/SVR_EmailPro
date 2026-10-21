@@ -1,0 +1,106 @@
+metadata:
+  name: payment_order_items
+  type: core_entity
+  description: "Movimientos bancarios individuales e inmutables generados para liquidar pagos a distribuidores."
+
+database_schema:
+  table: payment_order_items
+  table_es: "movimientos de órdenes de pago"
+  timestamps: true
+
+  fields:
+    payment_order_id:
+      type: bigint unsigned
+      references: payment_orders.id
+      description: "Orden de pago que contiene el movimiento."
+
+    payment_id:
+      type: bigint unsigned
+      references: payments.id
+      description: "Pago del cliente que origina la liquidación individual."
+
+    distributor_id:
+      type: bigint unsigned
+      references: distributors.id
+      description: "Distribuidor que debe recibir el importe."
+
+    distributor_bank_account_id:
+      type: bigint unsigned
+      references: distributor_bank_accounts.id
+      description: "Cuenta bancaria histórica seleccionada para el movimiento."
+
+    bank_payment_method_id:
+      type: bigint unsigned
+      references: bank_payment_methods.id
+      description: "Método bancario conservado al generar el movimiento."
+
+    payment_order_item_status_id:
+      type: bigint unsigned
+      references: payment_order_item_statuses.id
+      description: "Estado actual del movimiento dentro de la orden."
+
+    line_number:
+      type: integer unsigned
+      description: "Posición exacta del movimiento dentro del archivo TXT."
+
+    beneficiary_account:
+      type: string 18
+      description: "Cuenta, CLABE o convenio beneficiario conservado y normalizado para el archivo bancario."
+
+    holder_name:
+      type: string 150
+      description: "Nombre histórico del titular beneficiario."
+
+    bank_code:
+      type: string 3
+      not_null: false
+      description: "Clave de la institución bancaria requerida para movimientos PSC."
+
+    cie_reference:
+      type: string 20
+      not_null: false
+      description: "Referencia histórica requerida para movimientos CIL."
+
+    amount:
+      type: decimal 11,2
+      description: "Importe exacto que corresponde liquidar al distribuidor."
+
+    currency:
+      type: string 3
+      default: "MXP"
+      description: "Moneda utilizada en el movimiento bancario."
+
+    concept:
+      type: string 30
+      description: "Concepto bancario generado a partir del identificador público del pago."
+
+    numeric_reference:
+      type: string 7
+      not_null: false
+      description: "Referencia numérica estable requerida para movimientos PSC."
+
+    bank_folio:
+      type: string 100
+      not_null: false
+      description: "Folio o identificador devuelto por BBVA durante la conciliación."
+
+    paid_at:
+      type: datetime
+      not_null: false
+      description: "Fecha y hora real en que se confirmó la liquidación al distribuidor."
+
+    status_reason:
+      type: string 500
+      not_null: false
+      description: "Motivo del fallo o de la última resolución manual del movimiento."
+
+  unique_constraints:
+    - fields:
+        - payment_order_id
+        - line_number
+      description: "Impide repetir una posición dentro del archivo TXT de la misma orden."
+
+    - fields:
+        - payment_order_id
+        - payment_id
+      description: "Impide incluir dos veces el mismo pago dentro de una orden."

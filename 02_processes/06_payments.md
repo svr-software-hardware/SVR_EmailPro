@@ -1,7 +1,7 @@
 # Gestión de Pagos
 
-**Versión:** 0.6.0
-**Última actualización:** 2026-09-25
+**Versión:** 0.7.0
+**Última actualización:** 2026-10-20
 
 ---
 
@@ -31,6 +31,7 @@ Incluye:
 - Validación de que la organización del distribuidor puede emitir CFDI.
 - Consulta de pagos por parte del cliente y del distribuidor.
 - Cálculo del importe correspondiente a SVR y de la diferencia correspondiente al distribuidor.
+- Cálculo y conservación de la fecha a partir de la cual el pago puede liquidarse al distribuidor.
 
 No incluye:
 
@@ -182,6 +183,21 @@ nueva_expiración = fecha_base + meses_pagados
 
 ---
 
+# Disponibilidad para Liquidación al Distribuidor
+
+- Cuando OpenPay confirma el pago, se calcula `distributor_available_at` sumando días hábiles a la fecha de confirmación.
+- La cantidad se obtiene de `EMAILPRO_DISTRIBUTOR_PAYMENT_BUSINESS_DAYS` y su valor inicial es `5`.
+- La configuración debe contener un entero positivo.
+- Se consideran hábiles los días de lunes a viernes que no estén registrados como inhábiles bancarios de México.
+- Los días inhábiles se consultan en el catálogo `bank_holidays`, conservado con fecha completa.
+- `distributor_available_at` se calcula una sola vez y forma parte de la evidencia histórica del pago.
+- Los cambios posteriores en la variable de entorno o en el calendario aplican únicamente a pagos nuevos.
+- No existe una fecha máxima de liquidación ni un campo `distributor_due_at`.
+- Si el sistema no puede calcular la fecha por una configuración o calendario inválidos, no debe registrar un pago exitoso incompleto.
+- Alcanzar esta fecha no genera por sí mismo una transferencia; la elegibilidad completa y las órdenes se rigen por el proceso de órdenes de pago.
+
+---
+
 # Reglas de Registro
 
 - La entidad Payments contiene únicamente pagos exitosos.
@@ -199,6 +215,7 @@ nueva_expiración = fecha_base + meses_pagados
 - Cada pago conserva el identificador externo de la transacción exitosa proporcionado por el proveedor de pagos.
 - Cada pago conserva la fecha de expiración anterior y la nueva fecha de expiración.
 - Cada pago conserva la selección `requires_invoice` utilizada para determinar el receptor de la factura.
+- Cada pago conserva `distributor_available_at`, calculado con la configuración vigente al confirmarse el cobro.
 - La información utilizada para calcular un pago no se modifica aunque posteriormente cambien el costo, el precio o la capacidad del dominio.
 - Los pagos constituyen registros históricos y no se eliminan físicamente.
 
@@ -246,6 +263,8 @@ Registrar evidencia histórica del pago
     ↓
 Actualizar fecha de expiración del dominio
     ↓
+Calcular y conservar distributor_available_at
+    ↓
 Iniciar proceso de facturación
 ```
 
@@ -262,6 +281,7 @@ Iniciar proceso de facturación
 - Payment Receipts
 - Invoices
 - Invoice Payments
+- Bank Holidays
 
 ---
 
@@ -273,10 +293,10 @@ Los importes se conservan como valores finales de la operación y representan ca
 
 El registro del pago y la actualización de la vigencia deben completarse antes de intentar generar la factura. La facturación constituye un proceso independiente y recuperable.
 
-La diferencia calculada para el distribuidor se utiliza para emitir automáticamente una factura del distribuidor hacia SVR por cada pago. La transferencia bancaria correspondiente se definirá posteriormente en un proceso independiente de liquidaciones.
+La diferencia calculada para el distribuidor se utiliza para emitir automáticamente una factura del distribuidor hacia SVR por cada pago. La transferencia bancaria correspondiente se ejecuta posteriormente conforme al proceso independiente de órdenes de pago y conciliación bancaria.
 
 La integración técnica con el proveedor de pagos, la autenticación reforzada y el manejo de respuestas técnicas pertenecen a la librería y a la implementación de la API, no a este proceso.
 
 Payment Intents conserva únicamente el estado mínimo necesario para continuar una operación, garantizar idempotencia y convertir un cargo confirmado en un pago. No sustituye un historial técnico detallado de transacciones o eventos del proveedor.
 
-Los procesos relacionados con transacciones, liquidaciones, tarjetas, suscripciones y acceso futuro de SVR deberán documentarse de forma independiente cuando sean requeridos por el negocio.
+Los procesos relacionados con transacciones, tarjetas, suscripciones y acceso futuro de SVR deberán documentarse de forma independiente cuando sean requeridos por el negocio.

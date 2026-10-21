@@ -23,11 +23,6 @@ database_schema:
       type: decimal 11,2
       description: "Costo mensual por cuenta de correo asignado por SVR al distribuidor."
 
-    clabe:
-      type: string 18
-      not_null: false
-      description: "CLABE utilizada para realizar depósitos al distribuidor."
-
     fiscal_profile_id:
       type: bigint unsigned
       not_null: false

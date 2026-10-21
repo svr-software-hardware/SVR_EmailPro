@@ -1,7 +1,7 @@
 # Reglas de YAML
 
-**Versión:** 1.1.0  
-**Última actualización:** 2026-08-21
+**Versión:** 1.2.0
+**Última actualización:** 2026-10-20
 
 ---
 
@@ -173,10 +173,13 @@ Toda entidad incorpora automáticamente:
 
 ```text
 id
+public_id
 is_active
 ```
 
 Estos campos forman parte del estándar del proyecto.
+
+`public_id` es único, contiene exactamente diez caracteres alfanuméricos y es generado mediante la librería común del proyecto. No debe declararse manualmente dentro de los YAML.
 
 No deberán declararse dentro del bloque `fields`.
 

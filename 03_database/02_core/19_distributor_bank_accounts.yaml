@@ -1,0 +1,49 @@
+metadata:
+  name: distributor_bank_accounts
+  type: core_entity
+  description: "Cuentas bancarias presentadas por los distribuidores y validadas por SVR para recibir liquidaciones."
+
+database_schema:
+  table: distributor_bank_accounts
+  table_es: "cuentas bancarias de distribuidores"
+  timestamps: true
+
+  fields:
+    distributor_id:
+      type: bigint unsigned
+      references: distributors.id
+      description: "Distribuidor propietario de la cuenta bancaria."
+
+    bank_payment_method_id:
+      type: bigint unsigned
+      references: bank_payment_methods.id
+      description: "Método bancario calculado por el sistema a partir de la información capturada."
+
+    bank_account_status_id:
+      type: bigint unsigned
+      references: distributor_bank_account_statuses.id
+      description: "Estado actual de validación o conservación de la cuenta bancaria."
+
+    holder_name:
+      type: string 150
+      description: "Nombre del titular beneficiario utilizado para realizar la transferencia."
+
+    clabe:
+      type: string 18
+      not_null: false
+      description: "CLABE capturada cuando el distribuidor elige recibir transferencias mediante cuenta bancaria."
+
+    cie_agreement:
+      type: string 7
+      not_null: false
+      description: "Número de convenio capturado cuando el distribuidor elige recibir pagos mediante CIE."
+
+    cie_reference:
+      type: string 20
+      not_null: false
+      description: "Referencia asociada al convenio CIE capturada por el distribuidor."
+
+    status_reason:
+      type: string 500
+      not_null: false
+      description: "Motivo del último rechazo, cancelación o resolución que requiera una explicación."

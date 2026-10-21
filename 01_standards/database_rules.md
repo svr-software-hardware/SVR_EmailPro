@@ -1,7 +1,7 @@
 # Reglas de Base de Datos
 
-**Versión:** 1.1.0  
-**Última actualización:** 2026-08-21
+**Versión:** 1.2.0
+**Última actualización:** 2026-10-20
 
 ---
 
@@ -92,10 +92,13 @@ Todas las entidades incorporan automáticamente la siguiente infraestructura:
 
 ```text
 id
+public_id
 is_active
 ```
 
 Estos campos forman parte del estándar del proyecto y no deben declararse dentro del archivo YAML.
+
+`public_id` es un identificador público único de exactamente diez caracteres alfanuméricos. Su generación pertenece a la librería común del proyecto y permite exponer registros sin revelar la llave primaria interna.
 
 Cuando una entidad define:
 

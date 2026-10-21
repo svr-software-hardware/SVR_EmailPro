@@ -74,3 +74,7 @@ database_schema:
     new_expires_at:
       type: date
       description: "Fecha de expiración del dominio después de aplicar el pago."
+
+    distributor_available_at:
+      type: datetime
+      description: "Fecha y hora a partir de la cual el importe del distribuidor puede incorporarse a una orden de pago, calculada con los días hábiles configurados al confirmar el cobro."

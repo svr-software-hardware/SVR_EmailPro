@@ -1,0 +1,63 @@
+metadata:
+  name: payment_orders
+  type: core_entity
+  description: "Órdenes automáticas que agrupan movimientos independientes para su presentación y conciliación en BBVA."
+
+database_schema:
+  table: payment_orders
+  table_es: "órdenes de pago"
+  timestamps: true
+
+  fields:
+    payment_order_status_id:
+      type: bigint unsigned
+      references: payment_order_statuses.id
+      description: "Estado actual de procesamiento de la orden."
+
+    debit_account:
+      type: string 18
+      description: "Cuenta de cargo de SVR conservada al generar la orden."
+
+    item_quantity:
+      type: integer unsigned
+      description: "Cantidad histórica de movimientos incluidos en la orden."
+
+    total_amount:
+      type: decimal 11,2
+      description: "Suma histórica de los importes incluidos en la orden."
+
+    txt_file:
+      type: string 50
+      description: "Nombre interno del archivo TXT inmutable generado para la orden."
+
+    order_file:
+      type: string 50
+      not_null: false
+      description: "Nombre interno del archivo Excel de respuesta bancaria validado."
+
+    submitted_at:
+      type: datetime
+      not_null: false
+      description: "Fecha y hora en que se confirmó la presentación del TXT en BBVA."
+
+    submitted_by_id:
+      type: bigint unsigned
+      not_null: false
+      references: users.id
+      description: "Super Admin que confirmó la presentación del TXT en BBVA."
+
+    reconciled_at:
+      type: datetime
+      not_null: false
+      description: "Fecha y hora en que se aceptó el archivo de conciliación bancaria."
+
+    reconciled_by_id:
+      type: bigint unsigned
+      not_null: false
+      references: users.id
+      description: "Super Admin que cargó el archivo de conciliación aceptado."
+
+    status_reason:
+      type: string 500
+      not_null: false
+      description: "Motivo de cancelación o de la última resolución general que requiera una explicación."

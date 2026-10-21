@@ -1,0 +1,19 @@
+metadata:
+  name: bank_holidays
+  type: core_entity
+  description: "Días inhábiles bancarios de México utilizados para calcular la disponibilidad de liquidaciones."
+
+database_schema:
+  table: bank_holidays
+  table_es: "días inhábiles bancarios"
+  timestamps: true
+
+  fields:
+    holiday_date:
+      type: date
+      unique: true
+      description: "Fecha completa en la que las instituciones bancarias no operan para efectos del cálculo."
+
+    name:
+      type: string 150
+      description: "Nombre o motivo del día inhábil bancario."

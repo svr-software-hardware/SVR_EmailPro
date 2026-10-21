@@ -1,0 +1,39 @@
+metadata:
+  name: bank_payment_methods
+  type: general_catalog
+  description: "Métodos bancarios utilizados para construir los movimientos de las órdenes de pago."
+
+database_schema:
+  table: bank_payment_methods
+  table_es: "métodos de pago bancario"
+
+  fields:
+    code:
+      type: string 3
+      unique: true
+      description: "Código bancario utilizado en el archivo TXT."
+
+    name:
+      type: string 100
+      unique: true
+      description: "Nombre del método bancario."
+
+    description:
+      type: string 255
+      description: "Descripción funcional del método bancario."
+
+seed_data:
+  - id: 1
+    code: "PTC"
+    name: "Pago a cuenta BBVA"
+    description: "Transferencia a una cuenta beneficiaria de BBVA."
+
+  - id: 2
+    code: "PSC"
+    name: "Pago interbancario SPEI"
+    description: "Transferencia mediante CLABE a una institución distinta de BBVA."
+
+  - id: 3
+    code: "CIL"
+    name: "Pago a convenio CIE"
+    description: "Pago realizado mediante un convenio CIE y su referencia."

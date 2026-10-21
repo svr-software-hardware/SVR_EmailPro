@@ -1,0 +1,49 @@
+metadata:
+  name: payment_order_item_statuses
+  type: general_catalog
+  description: "Estados de los movimientos individuales contenidos en las órdenes de pago."
+
+database_schema:
+  table: payment_order_item_statuses
+  table_es: "estados de movimientos de órdenes de pago"
+
+  fields:
+    code:
+      type: string 30
+      unique: true
+      description: "Código estable utilizado para identificar el estado."
+
+    name:
+      type: string 100
+      unique: true
+      description: "Nombre del estado del movimiento."
+
+    description:
+      type: string 255
+      description: "Descripción funcional del estado."
+
+seed_data:
+  - id: 1
+    code: "pending"
+    name: "Pendiente"
+    description: "El movimiento todavía no ha sido conciliado."
+
+  - id: 2
+    code: "paid"
+    name: "Pagado"
+    description: "BBVA o un Super Admin confirmó la transferencia al distribuidor."
+
+  - id: 3
+    code: "failed"
+    name: "Fallido"
+    description: "El movimiento no fue pagado y puede reintentarse en otra orden."
+
+  - id: 4
+    code: "under_review"
+    name: "En revisión"
+    description: "El movimiento requiere una resolución manual de SVR."
+
+  - id: 5
+    code: "cancelled"
+    name: "Cancelado"
+    description: "El movimiento fue cancelado junto con una orden no presentada."
