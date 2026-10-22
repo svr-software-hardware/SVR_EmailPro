@@ -1,7 +1,7 @@
 # Órdenes de Pago y Conciliación Bancaria
 
-**Versión:** 0.2.0
-**Última actualización:** 2026-10-20
+**Versión:** 0.2.1
+**Última actualización:** 2026-10-22
 
 ---
 
@@ -214,6 +214,7 @@ Al generar una orden, EmailPro conserva para cada movimiento una copia inmutable
 - Método bancario: `PTC`, `PSC` o `CIL`.
 - Cuenta o CLABE beneficiaria.
 - Nombre del titular.
+- Institución financiera relacionada.
 - Clave de la institución bancaria.
 - Datos del convenio CIE cuando correspondan.
 - Cuenta de cargo de SVR.
@@ -644,6 +645,7 @@ Conservar ambos intentos en el historial
 
 - Distributors
 - Distributor Bank Accounts
+- Financial Institutions
 - Payments
 - Invoices
 - Invoice Payments

@@ -1,0 +1,408 @@
+metadata:
+  name: financial_institutions
+  type: general_catalog
+  description: "Instituciones financieras identificables mediante los primeros tres dígitos de una CLABE mexicana."
+
+database_schema:
+  table: financial_institutions
+  table_es: "instituciones financieras"
+
+  fields:
+    code:
+      type: string 3
+      unique: true
+      description: "Código de tres dígitos utilizado para identificar la institución dentro de una CLABE."
+
+    name:
+      type: string 100
+      unique: true
+      description: "Nombre de la institución financiera."
+
+seed_data:
+  - id: 1
+    code: "133"
+    name: "ACTINVER"
+
+  - id: 2
+    code: "062"
+    name: "AFIRME"
+
+  - id: 3
+    code: "721"
+    name: "ALBO"
+
+  - id: 4
+    code: "660"
+    name: "ALTOR"
+
+  - id: 5
+    code: "706"
+    name: "ARCUS FI"
+
+  - id: 6
+    code: "659"
+    name: "ASP INTEGRA OPC"
+
+  - id: 7
+    code: "127"
+    name: "AZTECA"
+
+  - id: 8
+    code: "166"
+    name: "BABIEN"
+
+  - id: 9
+    code: "030"
+    name: "BAJIO"
+
+  - id: 10
+    code: "002"
+    name: "BANAMEX"
+
+  - id: 11
+    code: "154"
+    name: "BANCO COVALTO"
+
+  - id: 12
+    code: "006"
+    name: "BANCOMEXT"
+
+  - id: 13
+    code: "137"
+    name: "BANCOPPEL"
+
+  - id: 14
+    code: "160"
+    name: "BANCO S3"
+
+  - id: 15
+    code: "152"
+    name: "BANCREA"
+
+  - id: 16
+    code: "019"
+    name: "BANJERCITO"
+
+  - id: 17
+    code: "147"
+    name: "BANKAOOL"
+
+  - id: 18
+    code: "106"
+    name: "BANK OF AMERICA"
+
+  - id: 19
+    code: "159"
+    name: "BANK OF CHINA"
+
+  - id: 20
+    code: "009"
+    name: "BANOBRAS"
+
+  - id: 21
+    code: "072"
+    name: "BANORTE"
+
+  - id: 22
+    code: "058"
+    name: "BANREGIO"
+
+  - id: 23
+    code: "060"
+    name: "BANSI"
+
+  - id: 24
+    code: "001"
+    name: "BANXICO"
+
+  - id: 25
+    code: "129"
+    name: "BARCLAYS"
+
+  - id: 26
+    code: "145"
+    name: "BBASE"
+
+  - id: 27
+    code: "012"
+    name: "BBVA MEXICO"
+
+  - id: 28
+    code: "112"
+    name: "BMONEX"
+
+  - id: 29
+    code: "677"
+    name: "CAJA POP MEXICA"
+
+  - id: 30
+    code: "683"
+    name: "CAJA TELEFONIST"
+
+  - id: 31
+    code: "715"
+    name: "CASHI CUENTA"
+
+  - id: 32
+    code: "124"
+    name: "CITI MEXICO"
+
+  - id: 33
+    code: "730"
+    name: "CLIP"
+
+  - id: 34
+    code: "901"
+    name: "CLS"
+
+  - id: 35
+    code: "903"
+    name: "CODI VALIDA"
+
+  - id: 36
+    code: "130"
+    name: "COMPARTAMOS"
+
+  - id: 37
+    code: "140"
+    name: "CONSUBANCO"
+
+  - id: 38
+    code: "725"
+    name: "COOPDESARROLLO"
+
+  - id: 39
+    code: "652"
+    name: "CREDICAPITAL"
+
+  - id: 40
+    code: "688"
+    name: "CREDICLUB"
+
+  - id: 41
+    code: "680"
+    name: "CRISTOBAL COLON"
+
+  - id: 42
+    code: "723"
+    name: "CUENCA"
+
+  - id: 43
+    code: "729"
+    name: "DEP Y PAG DIG"
+
+  - id: 44
+    code: "151"
+    name: "DONDE"
+
+  - id: 45
+    code: "616"
+    name: "FINAMEX"
+
+  - id: 46
+    code: "634"
+    name: "FINCOMUN"
+
+  - id: 47
+    code: "734"
+    name: "FINCO PAY"
+
+  - id: 48
+    code: "738"
+    name: "FINTOC"
+
+  - id: 49
+    code: "699"
+    name: "FONDEADORA"
+
+  - id: 50
+    code: "685"
+    name: "FONDO (FIRA)"
+
+  - id: 51
+    code: "601"
+    name: "GBM"
+
+  - id: 52
+    code: "167"
+    name: "HEY BANCO"
+
+  - id: 53
+    code: "168"
+    name: "HIPOTECARIA FED"
+
+  - id: 54
+    code: "021"
+    name: "HSBC"
+
+  - id: 55
+    code: "155"
+    name: "ICBC"
+
+  - id: 56
+    code: "036"
+    name: "INBURSA"
+
+  - id: 57
+    code: "902"
+    name: "INDEVAL"
+
+  - id: 58
+    code: "150"
+    name: "INMOBILIARIO"
+
+  - id: 59
+    code: "136"
+    name: "INTERCAM BANCO"
+
+  - id: 60
+    code: "059"
+    name: "INVEX"
+
+  - id: 61
+    code: "110"
+    name: "JP MORGAN"
+
+  - id: 62
+    code: "128"
+    name: "KAPITAL"
+
+  - id: 63
+    code: "661"
+    name: "KLAR"
+
+  - id: 64
+    code: "653"
+    name: "KUSPIT"
+
+  - id: 65
+    code: "670"
+    name: "LIBERTAD"
+
+  - id: 66
+    code: "602"
+    name: "MASARI"
+
+  - id: 67
+    code: "722"
+    name: "MERCADO PAGO W"
+
+  - id: 68
+    code: "720"
+    name: "MEXPAGO"
+
+  - id: 69
+    code: "042"
+    name: "MIFEL"
+
+  - id: 70
+    code: "158"
+    name: "MIZUHO BANK"
+
+  - id: 71
+    code: "600"
+    name: "MONEXCB"
+
+  - id: 72
+    code: "108"
+    name: "MUFG"
+
+  - id: 73
+    code: "132"
+    name: "MULTIVA BANCO"
+
+  - id: 74
+    code: "135"
+    name: "NAFIN"
+
+  - id: 75
+    code: "638"
+    name: "NUBANK"
+
+  - id: 76
+    code: "710"
+    name: "NVIO"
+
+  - id: 77
+    code: "148"
+    name: "PAGATODO"
+
+  - id: 78
+    code: "732"
+    name: "PEIBO"
+
+  - id: 79
+    code: "714"
+    name: "PPBALANCEMX"
+
+  - id: 80
+    code: "620"
+    name: "PROFUTURO"
+
+  - id: 81
+    code: "170"
+    name: "REVOLUT BANK"
+
+  - id: 82
+    code: "156"
+    name: "SABADELL"
+
+  - id: 83
+    code: "014"
+    name: "SANTANDER"
+
+  - id: 84
+    code: "044"
+    name: "SCOTIABANK"
+
+  - id: 85
+    code: "157"
+    name: "SHINHAN"
+
+  - id: 86
+    code: "728"
+    name: "SPIN BY OXXO"
+
+  - id: 87
+    code: "646"
+    name: "STP"
+
+  - id: 88
+    code: "703"
+    name: "TESORED"
+
+  - id: 89
+    code: "684"
+    name: "TRANSFER"
+
+  - id: 90
+    code: "727"
+    name: "TRANSFER DIRECT"
+
+  - id: 91
+    code: "631"
+    name: "TRF"
+
+  - id: 92
+    code: "138"
+    name: "UALA"
+
+  - id: 93
+    code: "656"
+    name: "UNAGRA"
+
+  - id: 94
+    code: "617"
+    name: "VALMEX"
+
+  - id: 95
+    code: "605"
+    name: "VALUE"
+
+  - id: 96
+    code: "113"
+    name: "VE POR MAS"
+
+  - id: 97
+    code: "141"
+    name: "VOLKSWAGEN"

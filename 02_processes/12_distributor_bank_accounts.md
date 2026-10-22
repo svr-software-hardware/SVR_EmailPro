@@ -1,7 +1,7 @@
 # Cuentas Bancarias de Distribuidores
 
-**Versión:** 0.2.0
-**Última actualización:** 2026-10-20
+**Versión:** 0.3.0
+**Última actualización:** 2026-10-22
 
 ---
 
@@ -64,14 +64,19 @@ El distribuidor elige si desea recibir sus liquidaciones mediante CLABE o median
 Cuando elige CLABE:
 
 - Captura una CLABE válida de 18 dígitos.
+- El sistema obtiene el código de la institución financiera de los primeros tres dígitos de la CLABE.
+- El sistema relaciona la cuenta con el catálogo de instituciones financieras mediante ese código.
+- El sistema obtiene el número de cuenta de once dígitos contenido entre las posiciones 7 y 17 de la CLABE.
 - No captura convenio ni referencia CIE.
-- Si la CLABE pertenece a BBVA, el sistema determina automáticamente el método `PTC`.
+- Si la institución corresponde a BBVA, con código `012`, el sistema determina automáticamente el método `PTC`.
 - Si la CLABE pertenece a otra institución, el sistema determina automáticamente el método `PSC`.
 
 Cuando elige CIE:
 
 - Captura el convenio CIE y su referencia correspondiente.
 - No captura CLABE.
+- La institución financiera se asigna automáticamente a BBVA, con código `012`.
+- El número de cuenta permanece vacío porque el pago se identifica mediante el convenio CIE.
 - El sistema determina automáticamente el método `CIL`.
 
 El distribuidor no selecciona directamente `PTC`, `PSC` o `CIL`. El sistema calcula el método a partir de la información bancaria capturada y conserva la relación con el catálogo de métodos bancarios.
@@ -101,6 +106,9 @@ Si el distribuidor desea volver a utilizar datos de una cuenta histórica que ya
 - El distribuidor selecciona CLABE o CIE y captura únicamente los campos correspondientes a su selección.
 - CLABE y CIE son alternativas mutuamente excluyentes.
 - Una cuenta con CLABE no puede conservar datos CIE y una cuenta CIE no puede conservar una CLABE.
+- Una CLABE debe tener una estructura válida y su código institucional debe existir y encontrarse activo en el catálogo de instituciones financieras.
+- Para CLABE, la institución financiera y el número de cuenta se deducen en el servidor y no se reciben como valores editables independientes.
+- Para CIE, la institución financiera se asigna automáticamente a BBVA y el número de cuenta permanece vacío.
 - La primera cuenta se crea con estado `pending`.
 - Mientras no exista una cuenta verificada, ningún movimiento puede incorporarse a una orden de pago para ese distribuidor.
 - SVR revisa manualmente la información y realiza las acciones externas necesarias, incluida el alta del beneficiario en BBVA cuando corresponda.
@@ -150,6 +158,8 @@ La advertencia debe comunicar de forma equivalente lo siguiente:
 - El Super Admin puede consultar también solicitudes verificadas, rechazadas y canceladas mediante filtros.
 - Las solicitudes pendientes se ordenan de la más antigua a la más reciente.
 - Cada registro muestra por lo menos el distribuidor, la cuenta parcialmente oculta, la fecha de solicitud, el usuario solicitante y el estado.
+- Cuando corresponde a CLABE, el detalle muestra la institución financiera, la CLABE completa, el número de cuenta deducido y el titular beneficiario.
+- Cuando corresponde a CIE, el detalle muestra BBVA, el convenio, la referencia y el titular beneficiario.
 - El detalle permite consultar la información completa necesaria para realizar la validación.
 - Desde el detalle, el Super Admin puede revisar el método calculado y validar o rechazar la solicitud.
 - Para solicitudes resueltas se muestra quién realizó la acción, cuándo la realizó y el motivo cuando corresponda.
@@ -231,6 +241,7 @@ La pausa no reinicia ni modifica `distributor_available_at`.
 # Seguridad y Presentación
 
 - La cuenta o CLABE debe validarse conforme al método bancario correspondiente.
+- La institución financiera y el número de cuenta no se capturan manualmente cuando existe una CLABE; se deducen de su estructura.
 - La interfaz debe ocultar parcialmente los números de cuenta en listados y mensajes generales.
 - Los datos completos únicamente se muestran a usuarios autorizados y dentro de los flujos que los requieren.
 - La información bancaria no se incluye en respuestas públicas.
@@ -344,6 +355,7 @@ Cuenta solicitada cancelled
 
 - Distributors
 - Distributor Bank Accounts
+- Financial Institutions
 - Users
 - Payments
 - Invoices
@@ -358,4 +370,6 @@ La cuenta bancaria vigente no debe almacenarse únicamente como un valor reempla
 
 El proceso de órdenes de pago deberá consultar este proceso para determinar si un movimiento es elegible, pero conservará una copia inmutable de la cuenta y configuración bancaria utilizadas.
 
-Los campos concretos para `PTC`, `PSC` y `CIL` se definirán en la estructura de base de datos después de aprobar los procesos funcionales. CLABE y CIE deberán permanecer como alternativas mutuamente excluyentes.
+El catálogo de instituciones financieras se inicializa con el listado publicado por Banco de México. El código utilizado por EmailPro corresponde a los últimos tres dígitos de la clave de institución publicada y coincide con los primeros tres dígitos de la CLABE.
+
+CLABE y CIE permanecen como alternativas mutuamente excluyentes. Para CLABE, los primeros tres dígitos identifican la institución financiera y las posiciones 7 a 17 identifican el número de cuenta. Para CIE, la institución es siempre BBVA y no existe un número de cuenta derivado.

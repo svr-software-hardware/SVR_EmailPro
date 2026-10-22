@@ -19,6 +19,11 @@ database_schema:
       references: bank_payment_methods.id
       description: "Método bancario calculado por el sistema a partir de la información capturada."
 
+    financial_institution_id:
+      type: bigint unsigned
+      references: financial_institutions.id
+      description: "Institución financiera deducida de la CLABE o asignada a BBVA cuando corresponde a un convenio CIE."
+
     bank_account_status_id:
       type: bigint unsigned
       references: distributor_bank_account_statuses.id
@@ -32,6 +37,11 @@ database_schema:
       type: string 18
       not_null: false
       description: "CLABE capturada cuando el distribuidor elige recibir transferencias mediante cuenta bancaria."
+
+    account_number:
+      type: string 11
+      not_null: false
+      description: "Número de cuenta deducido de las posiciones 7 a 17 de la CLABE; permanece vacío para convenios CIE."
 
     cie_agreement:
       type: string 7
